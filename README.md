@@ -1,4 +1,4 @@
-# BF Model for Windows and Mac (version 2.3)
+# BF Model for Windows and Mac (version 2.4)
 
 One offline app with three parts: **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
@@ -8,18 +8,27 @@ the computer only. No internet connection is needed after install, except to loa
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.3.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.3.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.3.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.4.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.4.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.4.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
 
+## New in 2.4
+- Home page picture is the labelled chute image (particle factory, rotating chute, BF axis, coke bed; chute flow surface with
+  ribs, stiffeners, plain flow surface). It is shown whole; tap it to open it full size and pan, so every label can be read on a phone.
+  The signature is part of the picture, so the separate signature line is gone.
+- Production from oxygen: the blast volume input now **includes** the enrichment oxygen, so air = blast volume x 60 - oxygen flow.
+- Direct reduction degree is no longer an input. It is calculated from the fuel carbon and Fe in HM with the Rist diagram W point
+  (Fe/FeO equilibrium CO2/(CO+CO2) = 0.29 at about 1000 C, shaft efficiency 0.94), shown on the Results tab, and used in the
+  oxygen balance. The Results tab also shows the degree that the charging rate implies, as a check.
+
 ## New in 2.3
 - Batch chemistry, Burden tab: Mn to HM %, P to HM %, Minor slag constituents % and Fuel ash in bosh slag are no longer inputs
   (fixed standard values 65 %, 70 %, 3 % and 0.3 are used). Charges per day is replaced by **Charges per hour**, and a
-  **Blast and oxygen** box is added: cold blast volume, oxygen enrichment, oxygen purity, blast moisture, direct reduction degree
+  **Blast and oxygen** box is added: blast volume, oxygen enrichment, oxygen purity, blast moisture
   (plus C in HM %).
 - Results: **Production** two ways: from charges per hour (hot metal per charge x charges per hour x 24) and from the oxygen
   input (carbon/oxygen balance at the tuyeres: total O2 per hour / O2 needed per tHM, where O2 per tHM = carbon burnt at the
@@ -47,7 +56,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.3.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.4.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
