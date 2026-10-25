@@ -1,22 +1,33 @@
-# BF Model for Windows and Mac (version 2.1)
+# BF Model for Windows and Mac (version 2.2)
 
 One offline app with three parts: **Burden batch wise output chemistry** (lab report upload, raw material chemistry
-and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate, flux correction), the **Burden
+and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Nothing is uploaded; data is saved on
-the computer only. No internet connection is needed after install. BF Model replaces BF Burden model.
+the computer only. No internet connection is needed after install, except to load a file from a link. BF Model replaces BF Burden model.
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.1.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.1.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.1.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.2.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.2.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.2.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
 
-## Look (2.1, "Foundry" design)
+## New in 2.2
+- Batch chemistry, Burden tab: the Targets box (B2, MgO, Al2O3, MgO/Al2O3, slag rate) is gone; these are results of the
+  raw material analysis and the charge per batch. The header shows the calculated B2.
+- Results: "Slag vs targets" is now **Output slag chemistry** (calculated CaO, SiO2, Al2O3, MgO, B2, B3, MgO/Al2O3, slag rate,
+  fuel rate, hot metal per charge, with the actual lab value under each when an HM & slag sheet is loaded). Flux correction removed.
+- **Load from a link**: the chemistry Import tab and the calculator/simulator import cards take a web link (Google Sheets,
+  Google Drive, OneDrive/SharePoint, Dropbox or a direct file link) as well as a file. Share the file as "Anyone with the link".
+  The file is downloaded once and read on the device; nothing is uploaded. This needs internet (the phone app now asks for the
+  internet permission for it); everything else still works offline. The last link is remembered.
+- Small signature under the home photo.
+
+## Look ("Foundry" design, since 2.1)
 Graphite steel shell with molten hot-metal accents, made for a blast furnace tool. The home page is dark, with the photo
 whole in a steel frame (nothing on top of it) and the three parts as numbered panels: 01 chemistry (amber), 02 calculator
 (molten orange), 03 3D simulator (blast blue). Every page opens with the same graphite navigation strip and a molten line;
@@ -25,7 +36,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.1.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.2.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
