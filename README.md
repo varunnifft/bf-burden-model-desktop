@@ -1,4 +1,4 @@
-# BF Burden model for Windows and Mac (version 1.2)
+# BF Burden model for Windows and Mac (version 1.3)
 
 The same offline app as the Android version, for laptops and desktops: the burden calculator, the 3D charging
 simulator and the "Import inputs from a file" card (PDF, Excel, CSV, Word, text). Nothing is uploaded; inputs are
@@ -6,15 +6,15 @@ saved on the computer only. No internet connection is needed after install.
 
 | File | For | Size |
 |---|---|---|
-| `BF_Burden_model-1.2.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 83 MB |
-| `BF_Burden_model-1.2.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Burden_model-1.2.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 95 MB |
+| `BF_Burden_model-1.3.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Burden_model-1.3.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Burden_model-1.3.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
 ## Install on Windows
-1. Run `BF_Burden_model-1.2.0-Windows-Setup.exe`.
+1. Run `BF_Burden_model-1.3.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
@@ -38,6 +38,13 @@ above do not clear. Open Terminal and run:
 `xattr -dr com.apple.quarantine "/Applications/BF Burden model.app"`, then open the app again.
 
 Uninstall: drag the app from Applications to the Bin.
+
+## New in 1.3
+- **Jump buttons**: the calculator has a **3D simulator ›** button next to Calculate, and the simulator has
+  **‹ Burden calculator** next to Apply and restart; both pages also have Home / Burden calculator / 3D simulator buttons at the top.
+- **Same inputs on both pages**: press **Calculate** on the calculator and the simulator opens with the same burden,
+  moisture, material properties, matrix, chute, furnace geometry and gas inputs. Press **Apply and restart** on the
+  simulator and the calculator takes those inputs back.
 
 ## Using it
 - The home screen opens both tools. Go back with **View > Home** (Alt+Home on Windows, ⌘⇧H on Mac) or
