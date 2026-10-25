@@ -7,8 +7,8 @@ saved on the computer only. No internet connection is needed after install.
 | File | For | Size |
 |---|---|---|
 | `BF_Burden_model-1.2.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 83 MB |
-| `BF_Burden_model-1.2.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 100 MB |
-| `BF_Burden_model-1.2.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 106 MB |
+| `BF_Burden_model-1.2.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Burden_model-1.2.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 95 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
