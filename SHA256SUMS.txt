@@ -1,3 +1,3 @@
-a5f33660ffea6ad5f96dfefd73ae455957f26335b17ffb4c973d09df509a89be  BF_Model-2.4.0-Windows-Setup.exe
-236848c75aaa4b8678076dec941822d26ac7c7e7e8738472ae5d2b7b40239243  BF_Model-2.4.0-Mac-AppleSilicon.zip
-a55376244e46e845ea88606ccd1baa86e12c2605688aa9dc4157dda5e84482bc  BF_Model-2.4.0-Mac-Intel.zip
+16e6f312572d72a75a08be841b635d5c5e76ea2d16d3206fc35c9cb5e4d86882  BF_Model-2.5.0-Windows-Setup.exe
+d3c6985ea99b9577aa05cf9e1a4e337eb4bf128c5aed6e77ddc4e4822d5c2393  BF_Model-2.5.0-Mac-AppleSilicon.zip
+4c619ceb74d66526614b8282ad0489414e223b7277624467cf162eb873370a0b  BF_Model-2.5.0-Mac-Intel.zip

@@ -1,20 +1,33 @@
-# BF Model for Windows and Mac (version 2.4)
+# BF Model for Windows and Mac (version 2.5)
 
 One offline app with three parts: **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
-moisture from the chemistry part carry into the calculator and the 3D simulator. Nothing is uploaded; data is saved on
-the computer only. No internet connection is needed after install, except to load a file from a link. BF Model replaces BF Burden model.
+moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
+the computer only. Internet is needed once to sign up or log in (and to load a file from a link); after that the app works offline. BF Model replaces BF Burden model.
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.4.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.4.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.4.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.5.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.5.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.5.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 2.5: sign-up and login
+- On first launch the app asks the user to register: **name, mobile, email, company** > a **6-digit OTP** is emailed and
+  verified > the user creates a **login ID and password**. Then the app opens. The user stays logged in on that device
+  (Log out at the bottom of the home page); the app still works offline after that. "Forgot password?" resets by email OTP.
+- Every user is one row in the **BF Model users** Google Sheet in the Drive of varunnifft@gmail.com (registered on, name,
+  mobile, email, company, login ID, status, last login, logins, last seen, app). The owner gets an email for each new user.
+  Type **blocked** in a user's Status cell to stop them; an app that is online checks once a day.
+- Passwords are stored only as salted, iterated HMAC-SHA256 hashes, never in plain text. OTPs: 10 minutes, 5 tries,
+  5 emails per address per hour. Logins lock for 15 minutes after 8 wrong passwords.
+- Server: a Google Apps Script web app inside that Sheet, `registration-server/Code.gs`; setup and day-to-day steps in
+  `registration-server/SETUP.md`. The web app link is in `www/auth-config.js`. Internet is needed to register, log in
+  and for the daily check; Gmail allows about 100 script emails a day.
 
 ## New in 2.4
 - Home page picture is the labelled chute image (particle factory, rotating chute, BF axis, coke bed; chute flow surface with
@@ -56,7 +69,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.4.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.5.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
