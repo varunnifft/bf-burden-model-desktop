@@ -1,4 +1,4 @@
-# BF Model for Windows and Mac (version 3.0)
+# BF Model for Windows and Mac (version 3.1)
 
 One offline app with seven parts (**Report**, new in 2.6, **Fact must know**, new in 2.7, **Other charging modes**, new in 3.0, and **Feedback and Suggestion**): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
@@ -8,13 +8,19 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-3.0.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-3.0.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-3.0.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-3.1.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-3.1.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-3.1.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 3.1: BF Model Pro
+- **Report** and **Other charging modes** are part of BF Model Pro: **₹25 for 3 months**, both pages together. Pay by UPI,
+  card or netbanking (Razorpay); the page opens by itself after payment and stays open offline until the 3 months end.
+  Paying again adds 3 months. Every other page stays free. Until the owner switches payments on, both pages stay open.
+- The Report's **Subscription** button shows until when it is paid.
 
 ## New in 3.0: Other charging modes, Fact must know, Feedback and Suggestion
 - **Other charging modes** (home card 06, View > Other charging modes, Ctrl/⌘+6): other than C-O charging. Choose
