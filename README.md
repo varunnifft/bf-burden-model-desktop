@@ -1,6 +1,6 @@
-# BF Model for Windows and Mac (version 2.5)
+# BF Model for Windows and Mac (version 2.6)
 
-One offline app with three parts: **Burden batch wise output chemistry** (lab report upload, raw material chemistry
+One offline app with four parts (the fourth, **Report**, is new in 2.6): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
@@ -8,13 +8,37 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.5.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.5.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.5.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.6.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.6.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.6.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 2.6: Report page
+- **Report** is a fourth page, linked from every page (navigation strip, chemistry bottom tabs, home page card 04;
+  on the computer also View > Report, Ctrl/⌘+4). It puts the Batch chemistry results and the Burden calculator results
+  on one printable sheet: key figures, **burden ratio sinter : pellet : ore : other** (each other Fe-bearing material by
+  its name) with the charge per batch, output slag and hot metal chemistry, fuel rates and loads, production and
+  furnace operation, the **charging matrix** (calculator section 4, with the landing radius of every ring and a top-view
+  ring diagram), burden distribution (O/C by radius, zones, layers down the furnace) and the checks.
+  A value that both parts hold (blast volume, oxygen flow, ore/coke, the charge) is shown once; if the two pages hold
+  different values, both are shown in the same row and marked "differ".
+- The report recalculates the burden calculator from its saved inputs each time it opens (Refresh does it again).
+- **Download PDF**: on Windows/Mac a Save dialog writes an A4 PDF (Downloads by default); on the phone Android's print
+  screen opens, choose **Save as PDF**.
+- **Pay**: placeholder for now. Downloads are free and Pay says online payment is coming. See "Pay for the report".
+- Burden calculator Results: the "Blast − top pressure" tile is removed (both pressures are inputs under Furnace operation).
+
+## Pay for the report
+All settings are in `www/pay-config.js` (same file in `android-source/assets/www/` and `desktop-source/app/www/`):
+`required` (true locks the PDF download until paid), `amount`, `currency`, `per` ("report" = every download,
+"device" = once per device), `link` (the payment page from Razorpay, PayU, Instamojo, a Stripe Payment Link, or a
+`upi://pay?...` link) and `note`. Set them and rebuild. Pay opens the link in the browser or payment app; the user
+then types the payment reference to unlock. That reference is **not checked** yet: for real checking, the
+provider's webhook should mark the payment in the BF Model users Sheet and the app should ask the registration
+server before unlocking (a follow-up step once the provider is chosen).
 
 ## New in 2.5: sign-up and login
 - On first launch the app asks the user to register: **name, mobile, email, company** > a **6-digit OTP** is emailed and
@@ -69,7 +93,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.5.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.6.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
@@ -95,7 +119,7 @@ above do not clear. Open Terminal and run:
 Uninstall: drag the app from Applications to the Bin.
 
 ## Using it
-- The home screen opens the three parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
+- The home screen opens the four parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
   **3D simulator** buttons; the View menu has the same (Ctrl/⌘+1 chemistry, +2 calculator, +3 simulator, Alt+Home or ⌘⇧H home).
 - Order of work: chemistry (upload lab Excel, check Review, enter the charge on Burden, read Results) → burden calculator
   (furnace, chute matrix, gas; burden and moisture come from the chemistry part) → 3D simulator (same inputs; Calculate
