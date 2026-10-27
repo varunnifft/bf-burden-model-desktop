@@ -1,4 +1,4 @@
-# BF Model for Windows and Mac (version 2.9)
+# BF Model for Windows and Mac (version 2.9.1)
 
 One offline app with six parts (**Report**, new in 2.6, **Material based suggestion**, new in 2.7, and **Quiz & suggestions**, new in 2.8): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
@@ -8,9 +8,9 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.9.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.9.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.9.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.9.1-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.9.1-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.9.1-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
@@ -125,7 +125,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.9.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.9.1-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
