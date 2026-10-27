@@ -1,6 +1,6 @@
-# BF Model for Windows and Mac (version 2.6)
+# BF Model for Windows and Mac (version 3.1)
 
-One offline app with four parts (the fourth, **Report**, is new in 2.6): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
+One offline app with seven parts (**Report**, new in 2.6, **Fact must know**, new in 2.7, **Other charging modes**, new in 3.0, and **Feedback and Suggestion**): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
@@ -8,13 +8,65 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.6.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.6.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.6.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-3.1.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-3.1.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-3.1.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 3.1: BF Model Pro
+- **Report** and **Other charging modes** are part of BF Model Pro: **₹25 for 3 months**, both pages together. Pay by UPI,
+  card or netbanking (Razorpay); the page opens by itself after payment and stays open offline until the 3 months end.
+  Paying again adds 3 months. Every other page stays free. Until the owner switches payments on, both pages stay open.
+- The Report's **Subscription** button shows until when it is paid.
+
+## New in 3.0: Other charging modes, Fact must know, Feedback and Suggestion
+- **Other charging modes** (home card 06, View > Other charging modes, Ctrl/⌘+6): other than C-O charging. Choose
+  **COO** (coke, oxide 1, oxide 2) or **CCO** (coke 1, coke 2 usually at the centre, oxide) and fill the table as in the
+  plant sheet: weight of each dump, and ring, angle and portion (revolutions) of coke and oxide. The page shows coke and
+  oxide per charge, O/C, charge volume, layer thickness at the throat, kg per revolution and ring-wise ore and coke, from
+  the raw material data of the earlier pages (burden mix and moisture from Batch chemistry, bulk densities and throat
+  size from the calculator / 3D simulator). **Calculate and show 3D simulation** plays the whole charge in the 3D
+  simulator dump by dump, with the landing radius of every ring, the layers down to the tuyeres and O/C by radius.
+- **Material based suggestion** is now **Fact must know** (Ctrl/⌘+5). At the bottom: a live **CO, CCO, COO corrective
+  model** (sliders, presets, burden and gas animation, live comparison and a guide on when to choose each sequence).
+- **Quiz & suggestions** is now **Feedback and Suggestion** (Ctrl/⌘+7): the quiz lists, quiz alerts and the
+  "Confirm your password" box are gone; the suggestion box stays, with a button to the other charging modes. If the
+  server cannot take a suggestion, the email app opens with it addressed to the admin.
+
+## New in 2.9: answer sheet, latest two quizzes
+- After a test the Quiz page shows the score with the **answer sheet**: each question, your answer, the correct answer,
+  marks and the explanation. The result email has the same answer sheet.
+- The page shows the latest two quizzes; older ones are under **Older quizzes**.
+- The admin's box is now **Upload a quiz link**, with an "Are you sure?" check.
+- If the admin has not updated the Google server yet, the Quiz page says so with the steps.
+
+## New in 2.8: Quiz & suggestions
+- **Quiz & suggestions** is a sixth page (navigation strip on every page, home card 06, View > Quiz and suggestions,
+  Ctrl/⌘+6). Needs internet.
+- The app admin posts quiz links (Google Forms); they are saved in the admin's Google Sheet. Every user sees all quizzes,
+  new and old, and can take any of them. The form opens in the browser with the user's name and email filled in; the
+  score shows on the Quiz page after submitting and is emailed to the user.
+- A new quiz shows a banner in the app and a system notification while the app is open.
+- Suggestion box: changes or new features go to the admin by email.
+- **Delete account** at the bottom of the home page.
+- Logins made before 2.8 confirm their password once on the Quiz page.
+
+## New in 2.7: Material based suggestion, report suggestions
+- **Material based suggestion** is a fifth page (navigation strip on every page, home card 05; on the computer View >
+  Material based suggestion, Ctrl/⌘+5). Coke, sinter, pellet and lump ore as live 3D lumps: one lump for the combined
+  effect and one per single factor, with fines specks and crack mesh. Sliders (CRI, ash, alkali, size, FeO, basicity,
+  Al₂O₃, CCS, SiO₂, LOI, temperature, time …) start from your burden where the app has the value (Batch chemistry
+  analysis: coke ash from fixed carbon, alkali, sinter CaO/SiO₂ and Al₂O₃, pellet SiO₂, ore Al₂O₃; the calculator's
+  particle sizes), marked "yours". Results (CSR, RDI, swelling, fines, permeability, coke rate change) and the
+  suggestions update as you move them. Property tables and a compare-all tab with your burden mix. three.js r128 is
+  bundled (`www/lib/three.min.js`), so it works offline. Indicative model, not plant-calibrated.
+- Report: new section **07 Technical suggestions** (short rules of thumb from the results: slag B2, MgO/Al₂O₃, Al₂O₃,
+  slag rate, fuel rate, direct reduction, alkali and sulphur load, production gap, pellet and lump ore share, centre and
+  wall O/C, wall rings, coke layer, gas velocity). Checks are now section 08, and lines saying a material uses standard
+  values ("Not in BF report - standard values" and the like) are no longer listed.
 
 ## New in 2.6: Report page
 - **Report** is a fourth page, linked from every page (navigation strip, chemistry bottom tabs, home page card 04;
@@ -93,7 +145,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.6.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.9.1-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
@@ -119,7 +171,7 @@ above do not clear. Open Terminal and run:
 Uninstall: drag the app from Applications to the Bin.
 
 ## Using it
-- The home screen opens the four parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
+- The home screen opens the five parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
   **3D simulator** buttons; the View menu has the same (Ctrl/⌘+1 chemistry, +2 calculator, +3 simulator, Alt+Home or ⌘⇧H home).
 - Order of work: chemistry (upload lab Excel, check Review, enter the charge on Burden, read Results) → burden calculator
   (furnace, chute matrix, gas; burden and moisture come from the chemistry part) → 3D simulator (same inputs; Calculate
