@@ -1,6 +1,6 @@
-# BF Model for Windows and Mac (version 2.7)
+# BF Model for Windows and Mac (version 2.8)
 
-One offline app with five parts (**Report**, new in 2.6, and **Material based suggestion**, new in 2.7): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
+One offline app with six parts (**Report**, new in 2.6, **Material based suggestion**, new in 2.7, and **Quiz & suggestions**, new in 2.8): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
@@ -8,13 +8,24 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.7.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.7.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.7.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.8.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.8.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.8.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 2.8: Quiz & suggestions
+- **Quiz & suggestions** is a sixth page (navigation strip on every page, home card 06, View > Quiz and suggestions,
+  Ctrl/⌘+6). Needs internet.
+- The app admin posts quiz links (Google Forms); they are saved in the admin's Google Sheet. Every user sees all quizzes,
+  new and old, and can take any of them. The form opens in the browser with the user's name and email filled in; the
+  score shows on the Quiz page after submitting and is emailed to the user.
+- A new quiz shows a banner in the app and a system notification while the app is open.
+- Suggestion box: changes or new features go to the admin by email.
+- **Delete account** at the bottom of the home page.
+- Logins made before 2.8 confirm their password once on the Quiz page.
 
 ## New in 2.7: Material based suggestion, report suggestions
 - **Material based suggestion** is a fifth page (navigation strip on every page, home card 05; on the computer View >
@@ -107,7 +118,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.7.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.8.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
