@@ -1,6 +1,6 @@
-# BF Model for Windows and Mac (version 2.6)
+# BF Model for Windows and Mac (version 2.7)
 
-One offline app with four parts (the fourth, **Report**, is new in 2.6): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
+One offline app with five parts (**Report**, new in 2.6, and **Material based suggestion**, new in 2.7): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
@@ -8,13 +8,27 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.6.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.6.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.6.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-2.7.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-2.7.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-2.7.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 2.7: Material based suggestion, report suggestions
+- **Material based suggestion** is a fifth page (navigation strip on every page, home card 05; on the computer View >
+  Material based suggestion, Ctrl/⌘+5). Coke, sinter, pellet and lump ore as live 3D lumps: one lump for the combined
+  effect and one per single factor, with fines specks and crack mesh. Sliders (CRI, ash, alkali, size, FeO, basicity,
+  Al₂O₃, CCS, SiO₂, LOI, temperature, time …) start from your burden where the app has the value (Batch chemistry
+  analysis: coke ash from fixed carbon, alkali, sinter CaO/SiO₂ and Al₂O₃, pellet SiO₂, ore Al₂O₃; the calculator's
+  particle sizes), marked "yours". Results (CSR, RDI, swelling, fines, permeability, coke rate change) and the
+  suggestions update as you move them. Property tables and a compare-all tab with your burden mix. three.js r128 is
+  bundled (`www/lib/three.min.js`), so it works offline. Indicative model, not plant-calibrated.
+- Report: new section **07 Technical suggestions** (short rules of thumb from the results: slag B2, MgO/Al₂O₃, Al₂O₃,
+  slag rate, fuel rate, direct reduction, alkali and sulphur load, production gap, pellet and lump ore share, centre and
+  wall O/C, wall rings, coke layer, gas velocity). Checks are now section 08, and lines saying a material uses standard
+  values ("Not in BF report - standard values" and the like) are no longer listed.
 
 ## New in 2.6: Report page
 - **Report** is a fourth page, linked from every page (navigation strip, chemistry bottom tabs, home page card 04;
@@ -93,7 +107,7 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.6.0-Windows-Setup.exe`.
+1. Run `BF_Model-2.7.0-Windows-Setup.exe`.
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
 3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
@@ -119,7 +133,7 @@ above do not clear. Open Terminal and run:
 Uninstall: drag the app from Applications to the Bin.
 
 ## Using it
-- The home screen opens the four parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
+- The home screen opens the five parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
   **3D simulator** buttons; the View menu has the same (Ctrl/⌘+1 chemistry, +2 calculator, +3 simulator, Alt+Home or ⌘⇧H home).
 - Order of work: chemistry (upload lab Excel, check Review, enter the charge on Burden, read Results) → burden calculator
   (furnace, chute matrix, gas; burden and moisture come from the chemistry part) → 3D simulator (same inputs; Calculate
