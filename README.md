@@ -1,6 +1,6 @@
-# BF Model for Windows and Mac (version 2.9.1)
+# BF Model for Windows and Mac (version 3.0)
 
-One offline app with six parts (**Report**, new in 2.6, **Material based suggestion**, new in 2.7, and **Quiz & suggestions**, new in 2.8): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
+One offline app with seven parts (**Report**, new in 2.6, **Fact must know**, new in 2.7, **Other charging modes**, new in 3.0, and **Feedback and Suggestion**): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
 and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
 calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
 moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
@@ -8,13 +8,27 @@ the computer only. Internet is needed once to sign up or log in (and to load a f
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.9.1-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.9.1-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.9.1-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-3.0.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-3.0.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
+| `BF_Model-3.0.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
 
+
+## New in 3.0: Other charging modes, Fact must know, Feedback and Suggestion
+- **Other charging modes** (home card 06, View > Other charging modes, Ctrl/⌘+6): other than C-O charging. Choose
+  **COO** (coke, oxide 1, oxide 2) or **CCO** (coke 1, coke 2 usually at the centre, oxide) and fill the table as in the
+  plant sheet: weight of each dump, and ring, angle and portion (revolutions) of coke and oxide. The page shows coke and
+  oxide per charge, O/C, charge volume, layer thickness at the throat, kg per revolution and ring-wise ore and coke, from
+  the raw material data of the earlier pages (burden mix and moisture from Batch chemistry, bulk densities and throat
+  size from the calculator / 3D simulator). **Calculate and show 3D simulation** plays the whole charge in the 3D
+  simulator dump by dump, with the landing radius of every ring, the layers down to the tuyeres and O/C by radius.
+- **Material based suggestion** is now **Fact must know** (Ctrl/⌘+5). At the bottom: a live **CO, CCO, COO corrective
+  model** (sliders, presets, burden and gas animation, live comparison and a guide on when to choose each sequence).
+- **Quiz & suggestions** is now **Feedback and Suggestion** (Ctrl/⌘+7): the quiz lists, quiz alerts and the
+  "Confirm your password" box are gone; the suggestion box stays, with a button to the other charging modes. If the
+  server cannot take a suggestion, the email app opens with it addressed to the admin.
 
 ## New in 2.9: answer sheet, latest two quizzes
 - After a test the Quiz page shows the score with the **answer sheet**: each question, your answer, the correct answer,
