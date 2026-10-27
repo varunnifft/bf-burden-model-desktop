@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Delete your BF Model account</title><style>
+:root{color-scheme:light dark}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-width:720px;margin:24px auto;padding:0 16px;line-height:1.6;color:#1b1d20;background:#fff}
+@media (prefers-color-scheme:dark){body{color:#e8eaed;background:#16181b}a{color:#ff9a5c}}
+h1{font-size:26px;line-height:1.2}h2{font-size:18px;margin-top:24px}a{color:#c2410c}
+input,button{font:inherit;font-size:16px;padding:11px;margin:5px 0;width:100%;box-sizing:border-box;border-radius:8px;border:1px solid #999}
+button{background:#c2410c;color:#fff;border:0;cursor:pointer}#m{font-weight:600;margin-top:10px}footer{margin:32px 0 16px;font-size:13px;opacity:.7}
+</style></head><body>
+<h1>Delete your BF Model account</h1>
+<p>BF Model (Android app <code>com.bfburdenmodel.app</code>, Windows and Mac apps) by Niteen Kumar.</p>
+<h2>What is deleted</h2><p>Your login and profile (name, mobile number, email address, company, login ID and password hash) and any quiz results are deleted from the app owner's records straight away. Suggestions you sent are kept without your name or contact details. Payment records that the law requires us to keep (amount, date, payment ID) are kept for that period only. Furnace data is never uploaded, so there is nothing of it to delete on our side; uninstalling the app removes it from your device.</p>
+<h2>Three ways to delete</h2>
+<ol><li><b>In the app:</b> Home page, <b>Delete account</b> at the bottom, then your password.</li>
+<li><b>On this page:</b> enter your login ID (or email) and password below.</li>
+<li><b>By email:</b> write to <a href="mailto:varunnifft@gmail.com?subject=Delete%20my%20BF%20Model%20account">varunnifft@gmail.com</a> from your registered email address with the subject "Delete my BF Model account". It is done within 7 days.</li></ol>
+<h2>Delete now</h2>
+<input id="u" placeholder="Login ID or email" autocomplete="username"><input id="p" type="password" placeholder="Password" autocomplete="current-password">
+<button id="b" type="button">Delete my account</button><div id="m" role="status"></div>
+<p style="font-size:14px;opacity:.75">Forgot your password? Use "Forgot password" in the app first, or use the email option above.</p>
+<script>
+document.getElementById("b").onclick=function(){var u=document.getElementById("u").value.trim(),p=document.getElementById("p").value,m=document.getElementById("m");
+if(!u||!p){m.textContent="Enter your login ID (or email) and password.";return}
+if(!confirm("Delete your BF Model account? This cannot be undone."))return;m.textContent="Deleting...";
+fetch("https://script.google.com/macros/s/AKfycby_j5bYAsHog2s17AAZLqhxrHHr7Gb_bYWMUaq76tA51fiasfUKi8RCVK76pjvJPUA8UQ/exec",{method:"POST",body:JSON.stringify({action:"deleteAccount",loginId:u,password:p,app:"Web delete page"}),headers:{"Content-Type":"text/plain;charset=utf-8"}})
+.then(function(r){return r.json()}).then(function(r){m.textContent=r.ok?"Your BF Model account is deleted.":(r.error||"Could not delete. Please use the email option.")})
+.catch(function(){m.textContent="No answer from the server. Please try again, or use the email option above."})};
+</script>
+<footer>BF Model · <a href="privacy-policy.html">Privacy policy</a> · <a href="delete-account.html">Delete your account</a></footer>
+</body></html>
