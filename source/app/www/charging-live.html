@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CO, CCO, COO live corrective model · BF Model</title>
+<style>
+:root{--bg:#f6f5f2;--card:#fff;--tx:#1d2125;--mu:#5d6670;--bd:#dcdad4;--ac:#c4571a;--ok:#2e7d4f;--wn:#b7791f;--bad:#d33;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#16181b;--card:#202327;--tx:#e8eaed;--mu:#9aa3ad;--bd:#33383e;--ac:#f08a4b;--ok:#5fcf8b;--wn:#e8b04a;--bad:#ff6b6b;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#16181b;--card:#202327;--tx:#e8eaed;--mu:#9aa3ad;--bd:#33383e;--ac:#f08a4b;--ok:#5fcf8b;--wn:#e8b04a;--bad:#ff6b6b;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:16px}h1{font-size:22px;margin:4px 0}h2{font-size:17px;margin:20px 0 8px}p.s{color:var(--mu);margin:0 0 10px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.tabs button,.btn{background:var(--card);color:var(--tx);border:1px solid var(--bd);padding:8px 14px;border-radius:8px;cursor:pointer;font:inherit}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.tabs button.rec::after{content:" ★";color:var(--wn)}.tabs button.on.rec::after{color:#fff}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:12px 14px}
+.sc{overflow-x:auto}table{border-collapse:collapse;width:100%;min-width:560px;background:var(--card)}
+th,td{border:1px solid var(--bd);padding:7px 9px;text-align:left;vertical-align:top;font-size:13.5px}th{background:var(--bg)}.tag{color:var(--ac);font-weight:600}
+tr.cur td{background:color-mix(in srgb,var(--ac) 12%,var(--card))}
+#cv{width:100%;height:470px;background:var(--card);border:1px solid var(--bd);border-radius:10px;display:block}
+.lay{display:grid;grid-template-columns:1fr 310px;gap:12px}@media(max-width:820px){.lay{grid-template-columns:1fr}#cv{height:380px}}
+.sl{margin:8px 0}.sl label{display:flex;justify-content:space-between;font-size:13px}input[type=range]{width:100%;accent-color:var(--ac)}
+.m{display:flex;justify-content:space-between;border-bottom:1px solid var(--bd);padding:5px 0;font-size:14px}.m b{font-variant-numeric:tabular-nums}
+.good{color:var(--ok)}.warn{color:var(--wn)}.bad{color:var(--bad)}small{color:var(--mu)}.hide{display:none}
+.pre{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 4px}.pre .btn{padding:5px 9px;font-size:13px}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin:8px 0}
+.adv{border-left:4px solid var(--ac);padding:8px 10px;margin-top:10px;background:var(--bg);border-radius:6px;font-size:14px}
+.lg{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--mu);margin-top:6px}.lg i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+</style></head><body><div class="w">
+<h1>Blast Furnace Charging: CO, CCO, COO – Live Corrective Model</h1>
+<p class="s">Change the furnace conditions and watch the burden, gas flow and pressure drop respond. The model recommends the corrective charging sequence. It is indicative, not plant-calibrated.</p>
+<div class="tabs" id="tb"></div>
+
+<div id="sim">
+<div class="lay"><div><canvas id="cv"></canvas>
+<div class="lg"><span><i style="background:#3a3c40"></i>Coke layer</span><span><i style="background:#a8552b"></i>Ore layer</span><span><i style="background:#e8c27a"></i>Fines</span><span><i style="background:#4aa8e6"></i>Gas flow</span><span><i style="background:#d33"></i>Cohesive zone</span></div></div>
+<div class="card">
+<div class="pre"><button class="btn" data-p="good">Good burden</button><button class="btn" data-p="norm">Normal</button><button class="btn" data-p="poor">Poor burden</button><button class="btn" data-p="cold">Cold furnace</button></div>
+<div id="sl"></div>
+<label class="chk"><input type="checkbox" id="au"> Live drift + auto-correct</label>
+<h2 style="margin-top:10px">Result for <span id="cs" class="tag"></span></h2><div id="out"></div>
+<div class="adv" id="adv"></div><button class="btn" id="ap" style="margin-top:8px">Apply recommended</button>
+</div></div>
+<h2>Live comparison on current conditions</h2>
+<div class="sc"><table id="cmp"></table></div>
+<small>Pressure drop is the key signal: stable below 140 kPa, watch 140–160, hanging/slip risk above 160. Coke rate and productivity are relative to a CO baseline. ★ marks the recommended sequence.</small>
+</div>
+
+<div id="gd" class="hide">
+<h2>When to choose each sequence</h2>
+<div class="sc"><table><tr><th>Sequence</th><th>Order</th><th>Choose when</th><th>Trade-off</th></tr>
+<tr><td class="tag">CO</td><td>Coke → Ore</td><td>Stable furnace, good burden, normal ΔP and gas utilization.</td><td>Balanced; the default.</td></tr>
+<tr><td class="tag">CCO</td><td>Coke → Coke → Ore</td><td>Poor burden (fines, weak coke, RDI), high ΔP, hanging/slips, cold furnace, recovery after blow-down, high slag volume.</td><td>Higher coke rate, lower productivity. Corrective, not permanent.</td></tr>
+<tr><td class="tag">COO</td><td>Coke → Ore → Ore</td><td>Excellent burden, high permeability, low ΔP, hot stable furnace, target of low coke rate and high output.</td><td>Thicker ore layers cut permeability. Revert to CO/CCO if ΔP climbs.</td></tr></table></div>
+<h2>Corrective ladder</h2>
+<div class="card">Move one step at a time while watching ΔP, top gas temperature and gas utilization: <b>COO → CO → CCO</b> when problems appear, and back <b>CCO → CO → COO</b> as the furnace proves it can handle more ore.</div>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id),cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const SQ={
+CO:{pat:[['c',12],['o',18]],pf:1,ef:0,cf:0,pr:0},
+CCO:{pat:[['c',12],['c',12],['o',18]],pf:1.12,ef:-1.5,cf:22,pr:-6},
+COO:{pat:[['c',12],['o',18],['o',18]],pf:.88,ef:.8,cf:-18,pr:7}};
+const SLD=[['fines','Fines in burden (<5 mm)',0,15,.5,'%'],['csr','Coke CSR',50,75,1,'%'],['slag','Slag volume',220,420,5,' kg/thm'],['si','Hot metal Si',.2,1,.05,' %']];
+const PR={good:{fines:2,csr:70,slag:270,si:.6},norm:{fines:6,csr:65,slag:300,si:.55},poor:{fines:12,csr:58,slag:350,si:.5},cold:{fines:7,csr:63,slag:310,si:.25}};
+const st={seq:'CO',fines:6,csr:65,slag:300,si:.55,tab:'CO'};
+function calc(q,s=st){const k=SQ[q];
+ let P=100-2*s.fines-.9*Math.max(0,65-s.csr)+.4*Math.max(0,s.csr-65)-.05*(s.slag-300);P=Math.max(35,P*k.pf);
+ const dp=105*Math.pow(100/P,1.6);
+ const eta=50-.35*s.fines-.15*Math.max(0,65-s.csr)+k.ef-(dp>160?3:0);
+ const coke=480+k.cf+2*Math.max(0,65-s.csr)+.15*(s.slag-300)+(50-eta)*2;
+ const prod=100+k.pr-Math.max(0,dp-140)*.3;
+ const cold=s.si<.35;
+ const risk=dp>160||(cold&&q==='COO')?2:(dp>140||(cold&&q==='CO'))?1:0;
+ return{P,dp,eta,coke,prod,risk,cold}}
+function rec(){const c=st.si<.35;if(c)return'CCO';
+ for(const q of['COO','CO','CCO'])if(calc(q).dp<=140)return q;
+ return['CO','CCO','COO'].map(q=>[q,calc(q).dp]).sort((a,b)=>a[1]-b[1])[0][0]}
+function why(){const r=[];if(st.fines>8)r.push('high fines');if(st.csr<60)r.push('weak coke (low CSR)');if(st.slag>340)r.push('high slag volume');if(st.si<.35)r.push('cold furnace (low Si)');
+ return r.length?'Problems detected: '+r.join(', ')+'. Open the burden with extra coke.':st.fines<4&&st.csr>=67?'Excellent burden and good permeability: room to raise the ore load.':'Conditions are normal: keep the balanced sequence.'}
+const RK=['Stable','Watch','Hanging / slip risk'],RC=['good','warn','bad'];
+function mk(){ $('tb').innerHTML=['CO','CCO','COO'].map(q=>`<button data-t="${q}">${q}</button>`).join('')+'<button data-t="gd">Guide</button>';
+ $('sl').innerHTML=SLD.map(d=>`<div class="sl"><label><span>${d[1]}</span><b id="v_${d[0]}"></b></label><input type="range" id="r_${d[0]}" min="${d[2]}" max="${d[3]}" step="${d[4]}"></div>`).join('');
+ SLD.forEach(d=>$('r_'+d[0]).oninput=e=>{st[d[0]]=+e.target.value;ref()});
+ $('tb').onclick=e=>{const t=e.target.dataset.t;if(!t)return;st.tab=t;if(t!=='gd')st.seq=t;ref()};
+ document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{Object.assign(st,PR[b.dataset.p]);$('au').checked=false;auto(false);ref()});
+ $('ap').onclick=()=>{st.seq=st.tab=rec();ref()}}
+function ref(){const R=rec(),c=calc(st.seq);
+ $('sim').classList.toggle('hide',st.tab==='gd');$('gd').classList.toggle('hide',st.tab!=='gd');
+ document.querySelectorAll('#tb button').forEach(b=>{b.classList.toggle('on',b.dataset.t===st.tab);b.classList.toggle('rec',b.dataset.t===R)});
+ SLD.forEach(d=>{$('r_'+d[0]).value=st[d[0]];$('v_'+d[0]).textContent=(d[0]==='si'?(+st.si).toFixed(2):st[d[0]])+d[5]});
+ $('cs').textContent=st.seq;
+ const dc=c.dp>160?'bad':c.dp>140?'warn':'good';
+ $('out').innerHTML=`<div class="m"><span>Pressure drop ΔP</span><b class="${dc}">${c.dp.toFixed(0)} kPa</b></div><div class="m"><span>Permeability index</span><b>${c.P.toFixed(0)}</b></div><div class="m"><span>Gas utilization ηCO</span><b>${c.eta.toFixed(1)} %</b></div><div class="m"><span>Coke rate</span><b>${c.coke.toFixed(0)} kg/thm</b></div><div class="m"><span>Productivity index</span><b>${c.prod.toFixed(0)}</b></div><div class="m"><span>Furnace state</span><b class="${RC[c.risk]}">${RK[c.risk]}</b></div>`;
+ $('adv').innerHTML=`<b>Recommended: ${R}</b>${R===st.seq?' (active)':''}<br>${why()}`;
+ $('ap').style.display=R===st.seq?'none':'';
+ $('cmp').innerHTML='<tr><th>Sequence</th><th>ΔP (kPa)</th><th>Gas utilization</th><th>Coke rate</th><th>Productivity</th><th>State</th></tr>'+['CO','CCO','COO'].map(q=>{const x=calc(q);return`<tr class="${q===st.seq?'cur':''}"><td class="tag">${q}${q===R?' ★':''}</td><td>${x.dp.toFixed(0)}</td><td>${x.eta.toFixed(1)} %</td><td>${x.coke.toFixed(0)}</td><td>${x.prod.toFixed(0)}</td><td class="${RC[x.risk]}">${RK[x.risk]}</td></tr>`}).join('')}
+let tm=null,ph=0;
+function auto(on){clearInterval(tm);if(!on)return;tm=setInterval(()=>{ph+=.5;
+ st.fines=+cl(7+6*Math.sin(ph*.35),0,15).toFixed(1);st.csr=Math.round(64+7*Math.sin(ph*.23+1));st.slag=Math.round((300+50*Math.sin(ph*.17))/5)*5;st.si=+cl(.55+.3*Math.sin(ph*.3+2),.2,1).toFixed(2);
+ st.seq=st.tab=rec();ref()},1200)}
+/* ---------- canvas ---------- */
+const cv=$('cv'),cx2=cv.getContext('2d');let W=0,H=0,T=0,last=0,off=0;
+const gas=Array.from({length:70},()=>({f:Math.random()*2-1,y:Math.random(),v:.1+Math.random()*.1}));
+const HW=[[.03,.2],[.1,.2],[.5,.34],[.62,.34],[.8,.22],[.97,.22]];
+function hwAt(y){const t=y/H;for(let i=1;i<HW.length;i++)if(t<=HW[i][0]){const a=HW[i-1],b=HW[i],u=(t-a[0])/(b[0]-a[0]);return(a[1]+(b[1]-a[1])*u)*Math.min(W,540)}return HW[5][1]*Math.min(W,540)}
+const hs=n=>{const s=Math.sin(n*12.9898)*43758.5453;return s-Math.floor(s)};
+function draw(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;T+=dt;
+ const d=devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;if(cv.width!==w*d||cv.height!==h*d){cv.width=w*d;cv.height=h*d}
+ W=w;H=h;const g=cx2;g.setTransform(d,0,0,d,0,0);g.clearRect(0,0,W,H);
+ const rs=getComputedStyle(document.documentElement),tx=rs.getPropertyValue('--tx').trim()||'#222';
+ const rt=document.documentElement.dataset.theme,dark=rt==='dark'||(rt!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches);
+ const CK=dark?'#5a5e65':'#3a3c40',OR=dark?'#c9703a':'#a8552b',FN='#e8c27a',cx=W/2,c=calc(st.seq),k=SQ[st.seq],S=1.25;
+ const U=k.pat.reduce((a,b)=>a+b[1],0)*S,top=H*.03,bot=H*.8;
+ off=(off+dt*26*c.P/100)%U;
+ g.save();g.beginPath();HW.forEach((p,i)=>{const y=p[0]*H,x=cx-hwAt(y);i?g.lineTo(x,y):g.moveTo(x,y)});
+ for(let i=HW.length-1;i>=0;i--){const y=HW[i][0]*H;g.lineTo(cx+hwAt(y),y)}g.closePath();g.clip();
+ const nd=Math.round(c.dp>0?st.fines*1.4:0);
+ for(let y0=top-U+off;y0<bot;y0+=U){let y=y0;k.pat.forEach((l,i)=>{const th=l[1]*S;g.fillStyle=l[0]==='c'?CK:OR;g.fillRect(0,y,W,th);
+  if(i&&k.pat[i-1][0]===l[0]){g.fillStyle='rgba(255,255,255,.25)';g.fillRect(0,y,W,1)}y+=th});
+  y=y0;k.pat.forEach((l,i)=>{const th=l[1]*S;if(l[0]==='o'){g.fillStyle=FN;for(let j=0;j<nd;j++){const n=Math.floor(y0)*0+i*100+j,yy=y+hs(n+1)*th,xx=cx+(hs(n+7)*2-1)*hwAt(Math.max(top,yy))*.95;g.fillRect(xx,yy,2,2)}}y+=th})}
+ g.fillStyle=CK;g.fillRect(0,bot,W,H);g.fillStyle='#e0603a';g.fillRect(0,H*.9,W,H);
+ g.fillStyle='rgba(255,255,255,.08)';g.fillRect(0,bot,W,H*.1);
+ /* cohesive zone */
+ const ch=clamp=>0;g.strokeStyle='rgba(221,51,51,'+(.45+Math.min(.5,Math.max(0,c.dp-110)/100))+')';g.lineWidth=5+(st.slag-220)/22;g.setLineDash([9,6]);
+ g.beginPath();g.moveTo(cx-hwAt(H*.62),H*.64);g.lineTo(cx,H*.5);g.lineTo(cx+hwAt(H*.62),H*.64);g.stroke();g.setLineDash([]);
+ /* gas */
+ const chaos=cl((c.dp-110)/80,0,1);g.strokeStyle='rgba(74,168,230,.85)';g.lineWidth=1.6;
+ gas.forEach(p=>{p.y-=dt*p.v*(c.P/90);if(p.y<0){p.y=1;p.f=Math.random()*2-1}
+  p.f+=(Math.random()-.5)*(.03+chaos*.07);if(chaos>.3)p.f+=Math.sign(p.f||1)*.006*chaos;p.f=cl(p.f,-.95,.95);
+  const y=top+(bot-top)*p.y,x=cx+p.f*hwAt(y)*.95;g.beginPath();g.moveTo(x,y+7);g.lineTo(x,y);g.stroke()});
+ g.restore();
+ g.strokeStyle=tx;g.globalAlpha=.7;g.lineWidth=2;g.beginPath();HW.forEach((p,i)=>{const y=p[0]*H,x=cx-hwAt(y);i?g.lineTo(x,y):g.moveTo(x,y)});g.stroke();
+ g.beginPath();HW.forEach((p,i)=>{const y=p[0]*H;i?g.lineTo(cx+hwAt(y),y):g.moveTo(cx+hwAt(y),y)});g.stroke();g.globalAlpha=1;
+ g.fillStyle=tx;g.font='12px system-ui,sans-serif';g.textAlign='left';
+ g.fillText('Top charging: '+st.seq,8,16);g.fillText('Cohesive zone',8,H*.5);g.fillText('Hot blast → tuyeres',8,H*.8+4);g.fillText('Hot metal',8,H*.93);
+ g.textAlign='right';g.fillText('Burden descent '+(26*c.P/100).toFixed(0)+' px/s',W-8,16);g.fillText(chaos>.3?'Gas channeling at wall':'Gas spread across section',W-8,H*.5);
+ requestAnimationFrame(draw)}
+mk();ref();requestAnimationFrame(draw);
+$('au').onchange=e=>auto(e.target.checked);
+</script><script>
+/* BF Model: this page is shown live at the bottom of "Fact must know"; it reports its height to that page. */
+(function(){if(window.parent===window)return;var last=0;function tell(){var w=document.querySelector('.w'),h=Math.ceil(w.getBoundingClientRect().bottom+window.scrollY+8);if(Math.abs(h-last)>2){last=h;parent.postMessage({bfLiveHeight:h},'*')}}
+addEventListener('load',tell);addEventListener('resize',tell);document.addEventListener('click',function(){setTimeout(tell,60)});setInterval(tell,1000)})();
+</script></body></html>

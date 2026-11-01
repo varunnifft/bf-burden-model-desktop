@@ -1,0 +1,142 @@
+/* Home screen, "Horizon Forge" premium look: navy night-to-sunrise sky, ocean teal, molten hot metal.
+   Shared by the BF apps' first pages. Feature colours: one per module, used for the edge, icon and button only. */
+:root {
+  --n950: #040c17; --n900: #071426; --n800: #0b1f38; --n700: #123156; --line: #1d3553; --ink: #eef3f8; --ink-2: #c3d0dd; --muted: #93a6ba;
+  --chem: #ffb02e; --calc: #ff7a1a; --sim: #4fa8ff; --rep: #3ccf8e; --mat: #c3a6ff; --modes: #2fd3cb; --quiz: #ff6b4a; --know: #19b3b1; --inside: #ff4d2e;
+  --teal: #19b3b1; --amber: #ffb547;
+  --horizon: linear-gradient(90deg, #19b3b1 0%, #1f8fb3 30%, #ffb547 70%, #ff4d0d 100%);
+  --molten: linear-gradient(90deg, #ff3d00 0%, #ff7a1a 45%, #ffc23d 100%);
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif; --f-body: "IBM Plex Sans", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box }
+html { background: var(--n950) }
+body.pm-home { margin: 0; min-height: 100vh; color: var(--ink); font: 15px/1.5 var(--f-body);
+  background:
+    radial-gradient(1000px 500px at 85% 0%, rgba(31,143,179,.18), transparent 65%),
+    radial-gradient(900px 420px at 10% 100%, rgba(255,106,26,.12), transparent 65%),
+    linear-gradient(180deg, var(--n900), var(--n950) 60%);
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 24px max(14px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 1120px; margin: 0 auto }
+
+/* ---- hero */
+.hero { position: relative; overflow: hidden; border-radius: 22px; min-height: 440px; display: flex; align-items: flex-end;
+  background: linear-gradient(180deg, #0b2442, #2f6f86 62%, #e89a5c); border: 1px solid #1b3a5e;
+  box-shadow: 0 30px 60px -34px rgba(0,0,0,.9), 0 0 0 1px rgba(255,181,71,.06) }
+.hero .art { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 72% 50%;
+  animation: slowzoom 28s ease-in-out infinite alternate }
+@keyframes slowzoom { from { transform: scale(1) } to { transform: scale(1.06) } }
+.hero .shade { position: absolute; inset: 0;
+  background: linear-gradient(90deg, rgba(4,12,23,.88) 0%, rgba(4,12,23,.62) 38%, rgba(4,12,23,.05) 66%),
+              linear-gradient(0deg, rgba(4,12,23,.6), transparent 45%) }
+.htext { position: relative; padding: 34px 34px 32px; max-width: 620px }
+.brand { display: flex; align-items: center; gap: 12px }
+.mark { width: 46px; height: 46px; border-radius: 13px; display: grid; place-items: center; flex: none;
+  background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); border: 1px solid rgba(255,255,255,.18);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 0 0 26px -6px rgba(255,122,26,.6) }
+.mark svg { width: 30px; height: 30px }
+.eyebrow { font: 600 13px/1.2 var(--f-display); letter-spacing: .2em; text-transform: uppercase; color: #9fe6e3 }
+.hero h1 { margin: 14px 0 4px; font: 700 64px/.92 var(--f-display); letter-spacing: .05em; text-transform: uppercase; color: #fff; text-shadow: 0 4px 30px rgba(0,0,0,.5) }
+.hero h1 .hot { background: var(--molten); -webkit-background-clip: text; background-clip: text; color: transparent }
+.tagline { margin: 8px 0 0; font-size: 17px; color: #e6eef6; max-width: 46ch }
+.welcome { margin: 6px 0 0; font-size: 14px; color: #a9bccf }
+.hbtns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px }
+.hbtns .b { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 12px 18px; border-radius: 12px; text-decoration: none;
+  font: 700 15px/1.1 var(--f-body); -webkit-tap-highlight-color: transparent; transition: transform .18s, box-shadow .18s, background .18s }
+.hbtns .b svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round }
+.hbtns .know { color: #04201f; background: linear-gradient(180deg, #5fe0db, #19b3b1); box-shadow: 0 10px 26px -12px rgba(25,179,177,.95) }
+.hbtns .go { color: #fff; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.28); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px) }
+.hbtns .b:hover, .hbtns .b:focus-visible { transform: translateY(-2px); outline: none }
+.hbtns .b:focus-visible { box-shadow: 0 0 0 3px #ffb547 }
+.hbtns .go:hover { background: rgba(255,255,255,.16) }
+
+/* ---- free-trial banner */
+.trial { margin: 16px 0 0; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 16px 18px; border-radius: 16px; position: relative; overflow: hidden;
+  background: linear-gradient(120deg, rgba(25,179,177,.18), rgba(255,122,26,.16)); border: 1px solid rgba(255,181,71,.35) }
+.trial::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--horizon) }
+.trial .t { flex: 1 1 280px }
+.trial b { font: 700 20px/1.15 var(--f-display); letter-spacing: .04em; text-transform: uppercase; color: #fff; display: block }
+.trial span { color: var(--ink-2); font-size: 14px }
+.trial button { min-height: 46px; padding: 12px 18px; border-radius: 12px; border: 1px solid #ffb066; cursor: pointer;
+  background: linear-gradient(180deg, #ff9a3d, #e8590f); color: #1a0900; font: 700 15px var(--f-body); box-shadow: 0 10px 24px -12px rgba(255,106,26,.9) }
+.trial .days { font: 700 34px/1 var(--f-display); color: var(--amber) }
+.trial .days small { font: 600 12px var(--f-mono); color: var(--muted); display: block; letter-spacing: .06em }
+
+/* ---- section headings */
+.sec { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 30px 0 12px; font: 700 15px/1 var(--f-display); letter-spacing: .2em; text-transform: uppercase; color: #cfe0ee }
+.sec span { display: inline-flex; align-items: center; gap: 10px }
+.sec span::before { content: ""; width: 22px; height: 3px; border-radius: 3px; background: var(--horizon) }
+.sec em { font: 500 12px var(--f-mono); letter-spacing: .04em; text-transform: none; color: var(--muted); font-style: normal }
+
+/* ---- quick actions: big touch tiles */
+.quick { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px }
+.quick a { --c: var(--calc); display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; gap: 2px 12px; align-items: center; min-height: 76px;
+  padding: 14px; border-radius: 16px; text-decoration: none; color: var(--ink);
+  background: linear-gradient(160deg, rgba(255,255,255,.07), rgba(255,255,255,.02)); border: 1px solid var(--line);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: transform .18s, border-color .18s, box-shadow .18s; -webkit-tap-highlight-color: transparent }
+.quick svg { grid-row: 1 / span 2; width: 40px; height: 40px; padding: 8px; border-radius: 12px; fill: none; stroke: var(--c); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+  background: color-mix(in srgb, var(--c) 16%, transparent); border: 1px solid color-mix(in srgb, var(--c) 40%, transparent) }
+.quick b { font: 600 16px/1.1 var(--f-body) }
+.quick small { color: var(--muted); font-size: 12.5px }
+.quick a:hover, .quick a:focus-visible { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 16px 30px -20px var(--c); outline: none }
+
+/* ---- module cards */
+.parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px }
+a.card { --c: var(--calc); position: relative; display: grid; grid-template-columns: auto 1fr auto; grid-template-areas: "ico h n" "ico p p" "ico tag go"; gap: 4px 14px;
+  padding: 18px 18px 16px; border-radius: 18px; text-decoration: none; color: inherit; overflow: hidden;
+  background: linear-gradient(165deg, #10243d, #0a182a 70%); border: 1px solid var(--line);
+  box-shadow: 0 20px 40px -30px rgba(0,0,0,.95); -webkit-tap-highlight-color: transparent; transition: transform .2s, border-color .2s, box-shadow .2s }
+a.card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--c); box-shadow: 0 0 20px var(--c) }
+a.card::after { content: ""; position: absolute; right: -60px; top: -60px; width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--c) 22%, transparent), transparent 70%); pointer-events: none }
+a.card:hover, a.card:focus-visible { transform: translateY(-3px); border-color: color-mix(in srgb, var(--c) 70%, transparent); box-shadow: 0 26px 46px -28px rgba(0,0,0,.95), 0 0 0 1px var(--c); outline: none }
+a.card .ico { grid-area: ico; width: 50px; height: 50px; border-radius: 14px; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--c) 15%, #0b1a2c); border: 1px solid color-mix(in srgb, var(--c) 45%, transparent) }
+a.card .ico svg { width: 28px; height: 28px; fill: none; stroke: var(--c); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round }
+a.card .n { grid-area: n; font: 700 26px/1 var(--f-display); color: color-mix(in srgb, var(--c) 75%, #fff); opacity: .55 }
+a.card h3 { grid-area: h; margin: 2px 0 0; font: 600 25px/1.05 var(--f-display); letter-spacing: .02em; color: #fff }
+a.card p { grid-area: p; margin: 4px 0 6px; color: var(--ink-2); font-size: 14px }
+a.card .tag { grid-area: tag; align-self: center; justify-self: start; font: 600 11.5px/1.2 var(--f-mono); color: var(--ink-2); border: 1px solid var(--line); padding: 5px 8px; border-radius: 7px }
+a.card .tag.free { color: #b9f5e2; border-color: rgba(60,207,142,.6); background: rgba(60,207,142,.1) }
+a.card .go { grid-area: go; justify-self: end; align-self: center; font: 700 12.5px/1 var(--f-body); letter-spacing: .05em; text-transform: uppercase; color: #160900; background: var(--c); padding: 10px 13px; border-radius: 9px; white-space: nowrap }
+.note { color: var(--muted); font-size: 13px; margin: 14px 0 0; padding-left: 12px; border-left: 2px solid var(--line) }
+
+/* ---- user's labelled chute picture: shown whole, never covered */
+figure.photo { margin: 0; padding: 12px; border-radius: 18px; background: linear-gradient(160deg, #13283f, #0a1726); border: 1px solid var(--line) }
+figure.photo button { display: block; width: 100%; padding: 0; border: 0; background: none; cursor: zoom-in }
+figure.photo img { display: block; width: 100%; height: auto; border-radius: 10px; background: #fff }
+.zoom { position: fixed; inset: 0; z-index: 50; background: rgba(4,9,16,.96); overflow: auto; -webkit-overflow-scrolling: touch; display: none }
+.zoom.on { display: block }
+.zoom img { display: block; width: max(100vw, 1150px); max-width: none; height: auto; background: #fff }
+.zoom .close { position: fixed; top: max(12px, env(safe-area-inset-top, 0px)); right: 12px; font: 700 15px var(--f-body); color: #160900; background: #ff7a1a; border: 0; border-radius: 10px; padding: 11px 16px }
+
+.foot { align-items: center; margin-top: 22px; color: var(--muted); font: 500 12px var(--f-mono); letter-spacing: .04em; display: flex; flex-wrap: wrap; gap: 6px 16px }
+.foot .who { color: var(--ink-2) }
+.foot .out { font: 600 12px var(--f-mono); color: #ffc49a; background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; cursor: pointer; min-height: 32px }
+body.pm-home .pm-sign { border-top-color: var(--line); color: var(--muted) } body.pm-home .pm-sign b { color: var(--ink-2) }
+
+@media (max-width: 1100px) { .quick { grid-template-columns: repeat(3, minmax(0, 1fr)) } }
+@media (max-width: 900px) { .quick { grid-template-columns: repeat(2, minmax(0, 1fr)) } .quick a:last-child:nth-child(odd) { grid-column: 1 / -1 } }
+@media (max-width: 760px) { .parts { grid-template-columns: 1fr } }
+@media (max-width: 560px) {
+  body.pm-home { padding-left: max(12px, env(safe-area-inset-left, 0px)); padding-right: max(12px, env(safe-area-inset-right, 0px)) }
+  .hero { min-height: 540px; border-radius: 18px }
+  .hero .art { object-position: 66% 30%; height: 62% }
+  .hero .shade { background: linear-gradient(0deg, rgba(4,12,23,.98) 38%, rgba(4,12,23,.55) 58%, rgba(4,12,23,0) 78%) }
+  .htext { padding: 22px 18px 20px }
+  .hero h1 { font-size: 50px }
+  .tagline { font-size: 15.5px }
+  .hbtns .b { flex: 1 1 100%; justify-content: center }
+  .quick a { grid-template-columns: 1fr; grid-template-rows: auto auto auto; text-align: left; min-height: 120px }
+  .quick svg { grid-row: auto }
+  a.card { grid-template-columns: auto 1fr; grid-template-areas: "ico h" "p p" "tag tag" "go go"; padding: 16px 14px 14px }
+  a.card .n { display: none }
+  a.card h3 { font-size: 22px; align-self: center }
+  a.card .go { justify-self: stretch; text-align: center; padding: 12px; margin-top: 4px }
+  .sec { letter-spacing: .14em }
+}
+@media (prefers-reduced-motion: reduce) { .hero .art { animation: none } a.card, .quick a, .hbtns .b { transition: none } a.card:hover, .quick a:hover { transform: none } }
+/* signature footer (premium.js) on the dark home page */
+.pm-sign { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; margin: 26px 0 8px; padding: 16px 0 6px;
+  border-top: 1px solid var(--line); color: var(--muted); font: 500 12px/1.4 var(--f-body); text-align: center }
+.pm-sign img { height: 28px; width: auto; display: block } .pm-sign .l { display: none } .pm-sign b { color: var(--ink-2); font-weight: 600 }

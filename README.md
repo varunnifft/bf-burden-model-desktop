@@ -1,20 +1,50 @@
-# BF Model for Windows and Mac (version 2.6)
+# BF Model for Windows and Mac (version 3.5)
 
-One offline app with four parts (the fourth, **Report**, is new in 2.6): **Burden batch wise output chemistry** (lab report upload, raw material chemistry
-and moisture, charge per batch, hot metal and slag chemistry, basicity, fuel rate; files from the device or a link), the **Burden
-calculator** and the **3D charging simulator**. Every page has buttons to jump to the other parts, and the burden and
-moisture from the chemistry part carry into the calculator and the 3D simulator. Furnace data is never uploaded; it is saved on
-the computer only. Internet is needed once to sign up or log in (and to load a file from a link); after that the app works offline. BF Model replaces BF Burden model.
+One offline app for blast furnace burden work: **Data input** (one Excel/CSV fills every page), **Burden batch wise
+output chemistry**, the **Burden calculator**, **3D distribution** (chute filling the throat), the new **Furnace 3D view**
+(zone temperatures from wall to centre, gas flow from tuyere to top, PCI raceway) and the **Report**. Furnace data is
+never uploaded; it is saved on the computer only. Internet is needed once to sign up or log in (and to load a file from
+a link); after that the app works offline. Version 3.5 is an **update of BF Model 2.6**: it installs over it and keeps
+your saved inputs and your login.
 
 | File | For | Size |
 |---|---|---|
-| `BF_Model-2.6.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
-| `BF_Model-2.6.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 89 MB |
-| `BF_Model-2.6.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
+| `BF_Model-3.5.0-Windows-Setup.exe` | Windows 10 and 11, 64-bit | 76 MB |
+| `BF_Model-3.5.0-Mac-AppleSilicon.zip` | Mac with M1, M2, M3 or M4 chip, macOS 11 Big Sur or newer | 90 MB |
+| `BF_Model-3.5.0-Mac-Intel.zip` | Mac with an Intel chip, macOS 11 Big Sur or newer | 96 MB |
 | `SHA256SUMS.txt` | Checksums to confirm a download is complete and unchanged | |
 
 Not sure which Mac? Apple menu > **About This Mac**: "Chip Apple M…" is Apple Silicon, "Processor Intel…" is Intel.
+The 2.6 and 1.2 files stay in `downloads/` for anyone who needs an older version.
 
+## Updating from 2.6
+- **Windows**: run `BF_Model-3.5.0-Windows-Setup.exe`. It finds BF Model 2.6, closes it if it is open, and replaces it in
+  the same folder; Apps & features then shows BF Model 3.5 (one entry). The desktop and Start menu shortcuts are kept.
+  If 2.6 was installed "for anyone who uses this computer", run the Setup as an administrator to update that copy.
+- **Mac**: unzip, drag the new **BF Model.app** into Applications and choose **Replace**, then do the first-open step
+  under "Install on Mac" once more (each new download needs it).
+- Saved inputs, materials, charging matrices and the login are kept: they live in the user profile
+  (`%APPDATA%\BF Model` on Windows, `~/Library/Application Support/BF Model` on Mac), which neither update touches.
+
+## New in 3.5
+- **Data input** page (home quick action "Import data input"): one Excel or CSV upload fills the inputs on every page,
+  each value once; anything not in the file can still be typed on its page. The input data sheet can be downloaded as
+  Excel or CSV (also linked from Feedback and suggestion).
+- **Furnace 3D view** (new module 08): a cut-away 3D furnace you can rotate and zoom (whole furnace, top, shaft, cohesive
+  zone, tuyeres, hearth), with gas temperature, burden temperature, gas velocity, CO utilisation, reduction degree,
+  burden layers and pressure views, plus a 2D section. It uses the burden distribution of the selected charging mode
+  (C-O, COO, CCO or the last one charged), so the layers in the shaft match what was charged. Tuyeres, tapholes,
+  uptakes and coal lances are drawn to your numbers.
+- New inputs: **top gas temperatures 1-4** at 0, 90, 180 and 270 degrees (top temp 1 is the 0 degree reference),
+  **burden probe** (choose the number of points, then TL1..n and TR1..n from centre to wall) and **periphery
+  temperatures** T1..n with their angles. "Calculated against actual" compares them with the model, explains the
+  deviation and suggests actions. Assumed: tapping is good and all coal lances have similar, good flow.
+- **PCI raceway**: coal combustion and raceway simulator with live coal burning (devolatilisation, char burnout, flame
+  temperature, maximum PCI rate) on the same inputs.
+- Names: 3D simulator is now **3D distribution**, Furnace inside is **Furnace 3D view**. The charging matrix in the
+  calculator and 3D distribution goes up to **18 rings** (+ Ring / − Last ring).
+- On the computer: **Save PDF** works on the Furnace 3D view as well as the Report; Excel/CSV downloads ask where to
+  save (Downloads by default); View menu has Data input (Ctrl/⌘+0) and Furnace 3D view (Ctrl/⌘+5).
 
 ## New in 2.6: Report page
 - **Report** is a fourth page, linked from every page (navigation strip, chemistry bottom tabs, home page card 04;
@@ -93,10 +123,11 @@ reading in daylight. Text contrast is 4.5:1 or better everywhere (body text 7:1)
 The theme is one file, `forge.css`; `tools/apply_forge.py <www>` applies it to a folder made by `assemble.py`.
 
 ## Install on Windows
-1. Run `BF_Model-2.6.0-Windows-Setup.exe`.
+1. Run `BF_Model-3.5.0-Windows-Setup.exe` (updates 2.6 in place if it is installed).
 2. Windows may show **"Windows protected your PC"** (SmartScreen), because the app is not code-signed yet.
    Click **More info**, then **Run anyway**.
-3. Choose "Only for me" (no administrator rights needed) or "Anyone who uses this computer", pick the folder, and finish.
+3. New install: it goes into your user account (no administrator rights needed); pick the folder and finish.
+   Update: the folder of the earlier version is used, so there is nothing to choose.
 4. Open **BF Model** from the desktop shortcut or the Start menu.
 
 Uninstall: Settings > Apps > Installed apps > BF Model > Uninstall.
@@ -119,11 +150,12 @@ above do not clear. Open Terminal and run:
 Uninstall: drag the app from Applications to the Bin.
 
 ## Using it
-- The home screen opens the four parts. Every page has **‹ Home**, **Batch chemistry**, **Burden calculator** and
-  **3D simulator** buttons; the View menu has the same (Ctrl/⌘+1 chemistry, +2 calculator, +3 simulator, Alt+Home or ⌘⇧H home).
-- Order of work: chemistry (upload lab Excel, check Review, enter the charge on Burden, read Results) → burden calculator
-  (furnace, chute matrix, gas; burden and moisture come from the chemistry part) → 3D simulator (same inputs; Calculate
-  sends them, Apply and restart sends them back).
+- The home screen opens every part. Each page has a navigation strip (Home, Data input, Batch chemistry, Burden calculator,
+  3D distribution, Furnace 3D view, Report, …); the View menu has the same (Ctrl/⌘+0 data input, +1 chemistry,
+  +2 calculator, +3 3D distribution, +4 report, +5 furnace 3D view, Alt+Home or ⌘⇧H home).
+- Order of work: data input (one file for every page) → chemistry (check Review, the charge, Results) → burden calculator
+  (furnace, chute matrix up to 18 rings, gas) → 3D distribution → furnace 3D view (temperatures, gas flow, PCI raceway,
+  calculated against your measurements) → report.
 - Zoom with Ctrl/⌘ plus and minus; full screen from the View menu. Data is kept between sessions on this computer.
 
 ## Code signing (removes the warnings)
@@ -136,11 +168,16 @@ The builds are unsigned (Windows) and ad-hoc signed (Mac), so they work but show
 Once a certificate exists, rebuild with it (see the comments at the top of `source/build.sh`).
 
 ## What was tested
-On the build machine: the app opened the home page, calculator and 3D simulator; the input template (.xlsx, 128 values
-matched) and a PDF imported; inputs stayed after closing and reopening; web links cannot open inside the app.
-The Windows build was started under a Windows compatibility layer (Wine) and showed the home screen.
-Not yet tested on a real Windows PC or Mac: please try both before sharing widely.
+3.5, on the build machine (Linux): BF Model 2.6 was run first and saved inputs and a login; 3.5 then opened with the
+same profile already logged in and the inputs still there. Every page (home, data input, chemistry, calculator,
+3D distribution, furnace 3D view, report, feedback, fact must know) opened with no script errors, and Save PDF wrote
+a PDF from the Furnace 3D view. The Windows installer and both Mac apps were checked for contents, names, app ID and
+signature, but **not yet run on a real Windows PC or Mac**: please install the update over 2.6 on one of each
+before sharing widely.
 
 ## Rebuild
-`source/` has the Electron shell (`app/main.js`), the same web files as the Android app (`app/www/`, only the home page
-text changed from "phone" to "computer"), and `build.sh`. Electron 33, electron-builder 25.
+`source/` has everything: `package.json` (version), `app/main.js` and `app/preload.js` (the Electron shell, same
+app:// origin and app ID as 2.x so data carries over), `app/www/` (the same web files as the Android app 3.5),
+`build/installer.nsi` (Windows Setup), `build/icon.ico|icns`, `tools/` (asar packer, exe icon patch) and `build.sh`.
+On Linux or a Mac, `source/build.sh` downloads Electron 33.4.11, NSIS, 7-Zip and rcodesign from GitHub into
+`source/.cache`, and writes the three files into `downloads/` and `SHA256SUMS.txt`. No npm is needed.

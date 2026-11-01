@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en" class="pm-forge">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15171a">
+<title>Data input · BF Model</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="forge.css">
+<link rel="stylesheet" href="premium.css">
+<style>
+/* Data input: one upload fills every page; one sheet with every input, each once. */
+:root { --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif; --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace; --bad: #b3261e; --ok: #23703a; --coke: #2f62a8; --chem: #a8730a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bad: #ff8a80; --ok: #72c784; --coke: #5b8fd6; --chem: #e0b44a } }
+:root[data-theme="dark"] { --bad: #ff8a80; --ok: #72c784; --coke: #5b8fd6; --chem: #e0b44a }
+* { box-sizing: border-box } [hidden] { display: none !important }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body); padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 1100px; margin: 0 auto; display: grid; gap: 14px }
+.wrap > * { min-width: 0 }
+.top h1 { margin: 0; font: 700 34px/1.05 var(--f-display); letter-spacing: .02em; text-transform: uppercase }
+.top p { margin: 6px 0 0; color: var(--ink-2); max-width: 74ch }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px }
+@media (max-width: 820px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 10px; align-content: start; min-width: 0 }
+.card h2 { margin: 0; font: 600 21px/1.15 var(--f-display); letter-spacing: .03em }
+.card p { margin: 0; color: var(--ink-2) }
+.hint { font-size: 12.5px; color: var(--muted) }
+.btn { font: 600 14px/1 var(--f-body); border-radius: 9px; padding: 12px 15px; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); display: inline-flex; gap: 8px; align-items: center; justify-content: center; text-decoration: none; -webkit-tap-highlight-color: transparent }
+.btn:hover { border-color: var(--accent) } .btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.btn.go { background: linear-gradient(180deg, #ff9a3d, #ec5f12); color: #1a0900; border-color: #ffb066 }
+.btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.row { display: flex; flex-wrap: wrap; gap: 8px }
+.drop { border: 2px dashed var(--line); border-radius: 12px; padding: 22px 14px; text-align: center; display: grid; gap: 10px; justify-items: center; background: var(--surface-2) }
+.drop.over { border-color: var(--accent) }
+.drop b { font: 600 17px var(--f-display); letter-spacing: .03em }
+.flow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; counter-reset: s }
+@media (max-width: 680px) { .flow { grid-template-columns: minmax(0, 1fr) } }
+.flow div { border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--surface-2); font-size: 13px }
+.flow div::before { counter-increment: s; content: counter(s); display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 11px; background: var(--graphite); color: #ffb547; font: 600 12px var(--f-mono); margin-right: 8px }
+.tw { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: 13px }
+th { font: 600 11.5px var(--f-body); color: var(--muted); text-align: left; padding: 6px; border-bottom: 1px solid var(--line); white-space: nowrap }
+td { padding: 6px; border-bottom: 1px solid var(--line) }
+td.n { text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+.bar { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; min-width: 80px }
+.bar i { display: block; height: 100%; background: var(--ok) }
+.pg { font-weight: 600 }
+.toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(30px); opacity: 0; transition: .25s; background: var(--graphite); color: #f3efe8; padding: 10px 16px; border-radius: 10px; font-size: 13.5px; z-index: 50; max-width: 90vw }
+.toast.show { opacity: 1; transform: translateX(-50%) }
+dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); max-width: min(820px, 96vw); width: 100%; padding: 0 }
+dialog::backdrop { background: rgba(0,0,0,.55) }
+.dh { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; align-items: baseline }
+.dh h2 { margin: 0; font: 600 20px var(--f-display) }
+.db { padding: 10px 14px; max-height: 62vh; overflow: auto; display: grid; gap: 12px }
+.df { padding: 10px 14px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap }
+.grp h3 { margin: 4px 0; font: 600 16px var(--f-display); letter-spacing: .03em }
+.lab { border: 1px solid var(--line); border-left: 4px solid #2a9db0; border-radius: 8px; padding: 9px 11px; background: var(--surface-2) }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="bfnav" id="nav" aria-label="Pages"></nav>
+  <div class="top">
+    <h1>Data input</h1>
+    <p>Upload one file and every page of the app is filled: Batch chemistry, the Burden calculator and Furnace 3D view. Each input lives on one page only, so nothing is typed twice. Whatever the file does not have, you can still type on the page.</p>
+  </div>
+
+  <div class="flow" aria-label="How it works">
+    <div>Download the input sheet below. It already holds the values in the app.</div>
+    <div>Fill or change the Value column; add your lab analyses on the "Lab analysis" sheet.</div>
+    <div>Upload it here. Check the values, then use them; every page updates.</div>
+  </div>
+
+  <div class="two">
+    <section class="card" aria-labelledby="upH">
+      <h2 id="upH">Upload data</h2>
+      <label class="drop" id="drop" for="file">
+        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></svg>
+        <b>Choose an Excel or CSV file</b>
+        <span class="hint">The BF Model input sheet, your lab report Excel, or the raw material test list with a Plant Measured Value column.</span>
+        <span class="btn go">Choose file</span>
+      </label>
+      <input type="file" id="file" accept=".xlsx,.xls,.xlsm,.csv,.ods" hidden>
+      <p class="hint">Nothing changes until you press "Use these values". Lab analyses are passed to Batch chemistry, which shows its own check first.</p>
+    </section>
+    <section class="card" aria-labelledby="dlH">
+      <h2 id="dlH">Input data sheet</h2>
+      <p>Every input of the app in one table, each once, with the page it belongs to and the value it has now. Use it to collect data from the plant, or as a record of a case.</p>
+      <div class="row"><button type="button" class="btn go" id="bXlsx"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Excel sheet</button><button type="button" class="btn" id="bCsv"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg><span>CSV sheet</span></button></div>
+      <p class="hint" id="dlHint"></p>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="cvH">
+    <h2 id="cvH">What each page takes</h2>
+    <div class="tw" id="cov"></div>
+    <p class="hint">Furnace 3D view reads geometry, blast, burden and fuel rates from the Burden calculator and Batch chemistry, and PCI burnout from its own raceway model. While the calculator is linked to Batch chemistry, burden per charge and moisture come from the charge and lab analysis. So those inputs appear only once.</p>
+  </section>
+</div>
+<dialog id="dlg"><div class="dh"><h2 id="dlgH">Values found</h2><button type="button" class="btn" id="dlgX">Close</button></div><div class="db" id="dlgB"></div><div class="df" id="dlgF"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<script src="lib/xlsx.full.min.js"></script>
+<script src="engine.js"></script>
+<script src="seed.js"></script>
+<script src="calc-def.js"></script>
+<script src="inside-model.js"></script>
+<script src="data-io.js"></script>
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); }, D = window.BFData;
+  var NAV = [['index.html', '‹ Home'], ['data-input.html', 'Data input'], ['chemistry.html', 'Batch chemistry'], ['calculator.html', 'Burden calculator'], ['simulator.html', '3D distribution'], ['furnace-inside.html', 'Furnace 3D view'], ['report.html', 'Report'], ['materials.html', 'Fact must know'], ['feedback.html', 'Feedback & suggestion'], ['charging-modes.html', 'Other charging modes']];
+  $('nav').innerHTML = NAV.map(function (n) { return '<a href="' + n[0] + '"' + (n[0] === 'data-input.html' ? ' class="on" aria-current="page"' : '') + '>' + n[1] + '</a>'; }).join('');
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function f(v) { return typeof v === 'number' && isFinite(v) ? +v.toFixed(3) : (v == null || v === '' ? '–' : esc(v)); }
+  function toast(m) { var t = $('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(function () { t.classList.remove('show'); }, 3800); }
+  var PAGES = { 'Batch chemistry': 'chemistry.html', 'Burden calculator': 'calculator.html', 'Furnace 3D view': 'furnace-inside.html' };
+  function cov() {
+    var c = D.coverage();
+    $('cov').innerHTML = '<table><thead><tr><th>Page</th><th style="text-align:right">Inputs</th><th style="text-align:right">With a value</th><th>Essential filled</th><th></th></tr></thead><tbody>' +
+      Object.keys(c).map(function (p) { var x = c[p], pc = x.ess ? x.essFilled / x.ess : 1; return '<tr><td class="pg">' + p + '</td><td class="n">' + x.n + '</td><td class="n">' + x.filled + '</td><td><div class="bar" title="' + Math.round(pc * 100) + ' %"><i style="width:' + Math.round(pc * 100) + '%"></i></div></td><td><a href="' + PAGES[p] + '">Type on the page ›</a></td></tr>'; }).join('') +
+      '<tr><td class="pg">Lab analyses</td><td colspan="2" class="hint">from your lab report or the sheet "Lab analysis"</td><td></td><td><a href="chemistry.html#import">Batch chemistry ›</a></td></tr></tbody></table>';
+  }
+  /* ---------- download */
+  var android = !!(window.Android && window.Android.share);
+  if (android) { $('bXlsx').hidden = true; $('bCsv').querySelector('span').textContent = 'Share CSV sheet'; $('dlHint').textContent = 'On the phone the sheet is shared as CSV: save it to Drive, e-mail it or send it on WhatsApp, open it in Excel or Sheets, then upload it here. The Excel sheet with the lab analysis tab is made on the desktop app or in a browser.'; }
+  else $('dlHint').textContent = 'Excel has three sheets: Read me, All inputs and Lab analysis. CSV has the All inputs table only.';
+  $('bXlsx').addEventListener('click', function () { try { XLSX.writeFile(D.workbook(), 'BF_Model_input_data.xlsx'); toast('Saved BF_Model_input_data.xlsx'); } catch (e) { toast('Could not save: ' + e.message); } });
+  $('bCsv').addEventListener('click', function () {
+    var text = D.csv();
+    if (android) { window.Android.share('BF Model input data', text); return; }
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + text], { type: 'text/csv' })); a.download = 'BF_Model_input_data.csv'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+    toast('Saved BF_Model_input_data.csv');
+  });
+  /* ---------- upload */
+  var last = null;
+  function read(file) {
+    var fr = new FileReader();
+    fr.onload = function () {
+      var u = new Uint8Array(fr.result), wb;
+      try { wb = XLSX.read(u, { type: 'array', raw: /\.csv$/i.test(file.name) }); } catch (e) { toast('Could not read the file: ' + e.message); return; }
+      var r = D.parse(wb); last = { name: file.name, u: u, r: r };
+      show(r, file.name);
+    };
+    fr.readAsArrayBuffer(file);
+  }
+  function show(r, name) {
+    var groups = {}; r.found.forEach(function (x, i) { (groups[x.e.page] = groups[x.e.page] || []).push([x, i]); });
+    var h = [];
+    Object.keys(groups).forEach(function (p) {
+      h.push('<div class="grp"><h3>' + p + ' · ' + groups[p].length + '</h3><div class="tw"><table><thead><tr><th>Use</th><th>Parameter</th><th>Unit</th><th style="text-align:right">Now</th><th style="text-align:right">From file</th></tr></thead><tbody>' +
+        groups[p].map(function (q) { var x = q[0], same = x.e.v != null && Math.abs(+x.e.v - x.v) < 1e-9; return '<tr><td><input type="checkbox" data-i="' + q[1] + '"' + (same ? '' : ' checked') + ' aria-label="Use"></td><td>' + esc(x.e.label) + (x.e.sec ? '<div class="hint">' + esc(x.e.sec) + '</div>' : '') + '</td><td>' + esc(x.e.unit) + '</td><td class="n">' + f(x.e.v) + '</td><td class="n">' + f(x.v) + (same ? ' <span class="hint">same</span>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div></div>');
+    });
+    if (r.lab) h.push('<div class="lab"><b>Lab analyses for ' + r.lab + ' material' + (r.lab === 1 ? '' : 's') + ' found.</b> They go to Batch chemistry, which checks them against its standard values before use. Use "Use these values" first, then "Send lab analyses".</div>');
+    if (r.unmatched.length) h.push('<p class="hint"><b>Not used (' + r.unmatched.length + '):</b> ' + r.unmatched.slice(0, 50).map(esc).join(', ') + (r.unmatched.length > 50 ? '…' : '') + '</p>');
+    if (!r.found.length && !r.lab) h.push('<p>No values found. The file needs a Value (or Plant Measured Value) column with a Key or Parameter column, or a lab report in the Batch chemistry layout.</p>');
+    $('dlgH').textContent = r.found.length + ' value' + (r.found.length === 1 ? '' : 's') + ' in ' + name;
+    $('dlgB').innerHTML = h.join('');
+    $('dlgF').innerHTML = '<button type="button" class="btn" id="dC">Cancel</button>' + (r.found.length ? '<button type="button" class="btn go" id="dA">Use these values</button>' : '') + (r.lab ? '<button type="button" class="btn" id="dL">Send lab analyses to Batch chemistry ›</button>' : '');
+    $('dC').onclick = function () { $('dlg').close(); };
+    if ($('dA')) $('dA').onclick = function () {
+      var pick = []; $('dlgB').querySelectorAll('input[data-i]').forEach(function (c) { if (c.checked) pick.push(r.found[+c.getAttribute('data-i')]); });
+      var n = D.apply(pick); cov();
+      toast('Used ' + pick.length + ' values: Batch chemistry ' + n.chem + ', Burden calculator ' + n.calc + ', Furnace 3D view ' + n.fi);
+      if (!r.lab) $('dlg').close(); else $('dA').disabled = true;
+    };
+    if ($('dL')) $('dL').onclick = function () {
+      var s = ''; for (var i = 0; i < last.u.length; i += 0x8000) s += String.fromCharCode.apply(null, last.u.subarray(i, i + 0x8000));
+      try { sessionStorage.setItem('bf-pending-lab', JSON.stringify({ name: last.name, b64: btoa(s) })); } catch (e) { toast('The file is too large to pass on: import it on the Batch chemistry page'); return; }
+      location.href = 'chemistry.html#import';
+    };
+    $('dlg').showModal();
+  }
+  $('file').addEventListener('change', function () { var fl = this.files[0]; this.value = ''; if (fl) read(fl); });
+  $('dlgX').addEventListener('click', function () { $('dlg').close(); });
+  var dz = $('drop');
+  ['dragenter', 'dragover'].forEach(function (t) { dz.addEventListener(t, function (e) { e.preventDefault(); dz.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (t) { dz.addEventListener(t, function (e) { e.preventDefault(); dz.classList.remove('over'); }); });
+  dz.addEventListener('drop', function (e) { var fl = e.dataTransfer.files[0]; if (fl) read(fl); });
+  cov();
+  if (location.hash === '#download') document.getElementById('dlH').scrollIntoView();
+})();
+</script>
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script src="pay-config.js"></script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>

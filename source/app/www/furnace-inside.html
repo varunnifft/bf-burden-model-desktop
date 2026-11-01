@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en" class="pm-forge">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15171a">
+<title>Furnace 3D view · BF Model</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="forge.css">
+<link rel="stylesheet" href="premium.css">
+<style>
+/* Furnace 3D view: zonal temperature (wall to centre) and gas flow from the tuyeres to the top, all inputs on one page.
+   Uses the Foundry tokens from forge.css; the section view is the one dark "stage" on the page. */
+:root {
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --coke: #2f62a8; --ore: #c4622d; --bad: #b3261e; --ok: #23703a; --link: #2f62a8; --chem: #a8730a;
+  --gas: #1f7a8c;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --coke: #5b8fd6; --ore: #d8703a; --bad: #ff8a80; --ok: #72c784; --link: #7fb0ff; --chem: #e0b44a; --gas: #4fc3d6 } }
+:root[data-theme="dark"] { --coke: #5b8fd6; --ore: #d8703a; --bad: #ff8a80; --ok: #72c784; --link: #7fb0ff; --chem: #e0b44a; --gas: #4fc3d6 }
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body);
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 48px max(16px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 1440px; margin: 0 auto }
+.wrap > * { min-width: 0 }
+h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance }
+.top h1 { font: 700 34px/1.05 var(--f-display); letter-spacing: .02em; text-transform: uppercase }
+.top p { margin: 6px 0 0; color: var(--ink-2); max-width: 78ch }
+.note { margin: 0; font-size: 12.5px; color: var(--ink-2) }
+.hint { margin: 0; font-size: 12px; color: var(--muted) }
+
+/* action bar */
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 14px 0; padding: 10px; border-radius: 14px;
+  background: var(--surface); border: 1px solid var(--line) }
+.bar .src { flex: 1 1 260px; min-width: 0; font-size: 12.5px; color: var(--ink-2); display: flex; flex-wrap: wrap; gap: 4px 14px }
+.bar .src b { font-weight: 600; color: var(--ink) }
+.btn { font: 600 13.5px/1 var(--f-body); border-radius: 9px; padding: 11px 14px; cursor: pointer; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink);
+  display: inline-flex; gap: 7px; align-items: center; -webkit-tap-highlight-color: transparent }
+.btn:hover { border-color: var(--accent) }
+.btn.go { background: linear-gradient(180deg, #ff9a3d, #ec5f12); color: #1a0900; border-color: #ffb066 }
+.btn:focus-visible, input:focus-visible, select:focus-visible, .chip:focus-visible, .seg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.btn[disabled] { opacity: .55; cursor: progress }
+
+/* phone: one of three panes */
+.seg { display: none; gap: 4px; padding: 4px; border-radius: 11px; background: var(--surface); border: 1px solid var(--line); margin-bottom: 12px; position: sticky; top: 6px; z-index: 5 }
+.seg button { flex: 1; font: 600 14px var(--f-body); padding: 10px 6px; border: 0; border-radius: 8px; background: transparent; color: var(--ink-2); cursor: pointer }
+.seg button.on { background: var(--graphite); color: #ffb547 }
+
+.main { display: grid; grid-template-columns: minmax(0, 460px) minmax(0, 1fr); gap: 16px; align-items: start }
+.res { display: grid; gap: 14px; min-width: 0 }
+.ins { display: grid; gap: 10px; min-width: 0 }
+@media (max-width: 1060px) {
+  .main { grid-template-columns: minmax(0, 1fr) }
+  .seg { display: flex }
+  .main[data-pane="in"] .res, .main[data-pane="see"] .ins, .main[data-pane="num"] .ins { display: none }
+  .main[data-pane="see"] .numpane, .main[data-pane="num"] .seepane { display: none }
+}
+@media (min-width: 1061px) { .res { position: sticky; top: 10px; max-height: calc(100vh - 20px); overflow: auto; padding-right: 2px } }
+
+/* input sections */
+details.sec { background: var(--surface); border: 1px solid var(--line); border-radius: 10px }
+details.sec > summary { list-style: none; cursor: pointer; padding: 11px 12px; display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: baseline }
+details.sec > summary::-webkit-details-marker { display: none }
+summary .k { font: 700 18px var(--f-display); color: var(--accent); width: 18px }
+summary h2 { font: 600 17px/1.2 var(--f-display); letter-spacing: .03em }
+summary .cnt { font: 12px var(--f-mono); color: var(--muted) }
+details.sec[open] > summary { border-bottom: 1px solid var(--line) }
+.body { padding: 10px 12px 12px; display: grid; gap: 10px }
+.fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 10px }
+.f { display: grid; gap: 3px; min-width: 0 }
+.f .lb { font-size: 12px; color: var(--ink-2); display: flex; gap: 5px; align-items: baseline; min-width: 0 }
+.f .lb span { overflow: hidden; text-overflow: ellipsis }
+.f .lb i { font-style: normal; color: var(--muted); white-space: nowrap }
+.f .row { display: flex; gap: 4px; align-items: stretch }
+.f input { font: 13px var(--f-mono); padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); color: var(--ink); width: 100%; min-width: 0 }
+.f.opt input { border-style: dashed }
+.f input.bad { border-color: var(--bad) }
+.chip { font: 600 10.5px/1 var(--f-body); border-radius: 5px; padding: 0 6px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; white-space: nowrap; min-width: 40px }
+.chip.calc { color: var(--coke); border-color: color-mix(in srgb, var(--coke) 45%, transparent) }
+.chip.chem { color: var(--chem); border-color: color-mix(in srgb, var(--chem) 45%, transparent) }
+.chip.man { color: var(--ink-2) }
+.grid3 { width: 100%; border-collapse: collapse; font-size: 12.5px }
+.grid3 th { font: 600 12px var(--f-body); color: var(--muted); text-align: right; padding: 3px 4px }
+.grid3 th:first-child, .grid3 td:first-child { text-align: left }
+.grid3 td { padding: 3px 4px }
+.grid3 td input { font: 12.5px var(--f-mono); padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); color: var(--ink); width: 100%; min-width: 52px; text-align: right }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 12px; color: var(--muted) }
+
+/* results */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; min-width: 0 }
+.card > header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 10px; align-items: baseline }
+.card h2 { font: 600 19px/1.15 var(--f-display); letter-spacing: .03em }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px }
+.tile { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; background: var(--surface-2); min-width: 0 }
+.tile span { display: block; font-size: 12px; color: var(--ink-2) }
+.tile b { display: block; font: 600 22px/1.15 var(--f-display); font-variant-numeric: tabular-nums }
+.tile b small { font: 500 12px var(--f-body); color: var(--muted); margin-left: 3px }
+.tile i { display: block; font-style: normal; font-size: 11.5px; color: var(--muted) }
+.tile.warn { border-color: var(--warn) } .tile.warn b { color: var(--warn) }
+
+/* the stage */
+.assume { margin: 0 0 12px; font-size: 13px; color: var(--ink-2); background: var(--surface); border: 1px dashed var(--line); border-radius: 10px; padding: 8px 12px }
+.assume b, .assume3 b { color: var(--ink) }
+.stage .assume3 b { color: #ffd9a8 }
+.sthead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: start }
+.mode { display: flex; gap: 4px; padding: 3px; border-radius: 9px; background: #1a1d21; border: 1px solid #3a3f46 }
+.mode button { font: 600 13px var(--f-body); border: 0; border-radius: 7px; padding: 8px 12px; background: transparent; color: #d9d4cc; cursor: pointer }
+.mode button.on { background: linear-gradient(180deg, #ff9a3d, #ec5f12); color: #1a0900 }
+.zl { font-size: 12.5px; color: #c8c3bb; align-self: center; margin-right: 2px }
+.sliders { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12.5px; color: #c8c3bb }
+.sliders label { display: inline-flex; gap: 8px; align-items: center }
+.sliders input { width: 140px }
+.banner { border-radius: 8px; padding: 8px 10px; font-size: 13px; background: #3a1410; border: 1px solid #ff6a4d; color: #ffe2dc }
+.banner.ok { background: #10291a; border-color: #4caf6a; color: #d9f5e2 }
+.al ul { margin: 6px 0 0; padding-left: 18px }
+.al li { margin: 2px 0 }
+.dyn { width: 100%; border-collapse: collapse; font-size: 12.5px }
+.dyn th { font: 600 12px var(--f-body); color: var(--muted); text-align: left; padding: 3px 4px }
+.dyn td { padding: 3px 4px }
+.dyn td input { font: 12.5px var(--f-mono); padding: 6px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface-2); color: var(--ink); width: 100%; min-width: 56px; text-align: right }
+.dyn td:first-child { font-weight: 600; white-space: nowrap }
+.bsel { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 12.5px; color: #c8c3bb }
+.bsel select { font: 600 13px var(--f-body); padding: 7px 9px; border-radius: 7px; border: 1px solid #3a3f46; background: #1a1d21; color: #efece7 }
+.bsel a { color: #ffb547 }
+.status { margin: 0; font: 12px var(--f-mono); color: #c8c3bb; display: flex; flex-wrap: wrap; gap: 4px 14px }
+.status b { font-weight: 500; color: #ffd9a8 }
+.status .pre { color: #ffb547 } .status .val { color: #8fd3a5 }
+.pkey { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 12px; color: #c8c3bb }
+.pkey i { display: inline-block; width: 12px; height: 12px; border-radius: 6px; margin-right: 5px; vertical-align: -1px }
+.chip.pci { color: #e8862a; border-color: color-mix(in srgb, #e8862a 45%, transparent) }
+.how summary { list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline }
+.how summary::-webkit-details-marker { display: none }
+.how summary h2::after { content: " ›"; color: var(--accent) }
+.how[open] summary h2::after { content: " ⌄" }
+.hw { display: grid; gap: 6px; max-width: 86ch }
+.hw h3 { margin: 8px 0 0; font: 600 16px var(--f-display); letter-spacing: .03em }
+.hw p { margin: 0; font-size: 13.5px; color: var(--ink-2) }
+.sub2 { font: 600 14px var(--f-display); letter-spacing: .03em; margin: 4px 0 0 }
+.stage { background: #0b0c0e; border-radius: 12px; border: 1px solid #2c3035; color: #e9e5de; padding: 10px; display: grid; gap: 8px; min-width: 0 }
+.stage h2 { color: #fff; font: 600 20px var(--f-display); letter-spacing: .04em }
+.stage .sub { font-size: 12.5px; color: #b3aea6; margin: 0 }
+.views { display: flex; flex-wrap: wrap; gap: 6px }
+.views button { font: 600 12.5px var(--f-body); border-radius: 7px; padding: 8px 10px; border: 1px solid #3a3f46; background: #1a1d21; color: #d9d4cc; cursor: pointer }
+.views button.on { background: linear-gradient(180deg, #ff9a3d, #ec5f12); border-color: #ffb066; color: #1a0900 }
+.views label { font-size: 12.5px; color: #c8c3bb; display: inline-flex; gap: 5px; align-items: center; padding: 0 4px }
+.cvwrap { position: relative; width: 100%; touch-action: pan-y }
+#cv { display: block; width: 100%; border-radius: 8px; cursor: crosshair }
+.hud { position: absolute; left: 8px; top: 8px; background: rgba(16,18,21,.88); border: 1px solid #3a3f46; border-radius: 8px; padding: 6px 9px; font: 12px/1.45 var(--f-mono); color: #efece7; pointer-events: none; max-width: 70% }
+.scale { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; font: 11.5px var(--f-mono); color: #c8c3bb }
+.scale canvas { width: 100%; height: 12px; border-radius: 3px }
+.tw { overflow-x: auto }
+table.t { border-collapse: collapse; width: 100%; font-size: 12.5px }
+table.t th { font: 600 11.5px var(--f-body); color: var(--muted); text-align: right; padding: 5px 6px; border-bottom: 1px solid var(--line); white-space: nowrap }
+table.t td { padding: 5px 6px; text-align: right; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+table.t th:first-child, table.t td:first-child { text-align: left; font-family: var(--f-body) }
+table.t td.hot { font-weight: 600 }
+.seepane, .numpane { display: grid; gap: 14px; min-width: 0 }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px }
+@media (max-width: 760px) { .two { grid-template-columns: minmax(0, 1fr) } }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible }
+.chart text { font: 11px var(--f-body); fill: var(--muted) }
+.alerts { display: grid; gap: 6px }
+.al { border: 1px solid var(--line); border-left: 4px solid #2a9db0; border-radius: 8px; padding: 7px 10px; font-size: 13.5px; background: var(--surface-2) }
+.al.hi { border-left-color: var(--bad) } .al.md { border-left-color: #e8862a } .al.ok { border-left-color: var(--ok) }
+.al b { font-weight: 600; margin-right: 4px }
+.lvl { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--ink-2) }
+.lvl input { flex: 1 }
+.toast { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%) translateY(30px); opacity: 0; transition: .25s; background: var(--graphite); color: #f3efe8; padding: 10px 16px; border-radius: 10px; font-size: 13.5px; z-index: 50; max-width: 90vw }
+.toast.show { opacity: 1; transform: translateX(-50%) }
+dialog { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink); max-width: min(720px, 94vw); width: 100%; padding: 0 }
+dialog::backdrop { background: rgba(0,0,0,.55) }
+dialog .dh { padding: 12px 14px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; gap: 10px; align-items: baseline }
+dialog .db { padding: 10px 14px; max-height: 60vh; overflow: auto }
+dialog .df { padding: 10px 14px; border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap }
+@media (prefers-reduced-motion: reduce) { .toast { transition: none } }
+@media print {
+  .bfnav, .bar, .seg, .ins, .views, .lvl, .btn { display: none !important }
+  .main { display: block } .res { position: static; max-height: none; overflow: visible }
+  body { background: #fff; color: #000 } .card, .stage { break-inside: avoid; margin-bottom: 10px }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="bfnav" id="nav" aria-label="Pages"></nav>
+  <div class="top">
+    <h1>Furnace 3D view</h1>
+    <p>Temperature from the wall to the centre and the gas path from the tuyeres to the stockline, built on your burden distribution from the calculator and your fuel rates and production from Batch chemistry. Every input is on this page; linked values update from those pages until you type over them.</p>
+  </div>
+
+  <div class="bar">
+    <div class="src" id="srcLine"></div>
+    <button type="button" class="btn" id="bLoad" title="Take the linked values again from the calculator and Batch chemistry"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 0 1 14-5.3L20 9M20 4v5h-5M20 12a8 8 0 0 1-14 5.3L4 15M4 20v-5h5"/></svg>Update from app</button>
+    <label class="btn" for="xl"><svg viewBox="0 0 24 24"><path d="M4 4h10l6 6v10H4zM14 4v6h6M8 14l3 3 5-6"/></svg>Import Excel</label>
+    <input type="file" id="xl" accept=".xlsx,.xls,.csv" hidden>
+    <button type="button" class="btn" id="bTpl"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Input template</button>
+    <button type="button" class="btn" id="bFit"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>Fit to my measurements</button>
+    <button type="button" class="btn go" id="bRun">Calculate</button>
+  </div>
+
+  <p class="assume" role="note"><b>Assumed:</b> tapping is good (the hearth is drained on time) and all coal lances have similar, good flow. Causes in the hearth and at single lances are therefore not considered in the results and suggestions.</p>
+
+  <div class="seg" role="tablist" aria-label="Show"><button type="button" data-p="in" class="on">Inputs</button><button type="button" data-p="see">Furnace view</button><button type="button" data-p="num">Numbers</button></div>
+
+  <div class="main" id="main" data-pane="in">
+    <div class="ins" id="ins">
+      <div class="legend"><span><b style="color:var(--coke)">calc</b> from Burden calculator</span><span><b style="color:var(--chem)">chem</b> from Batch chemistry</span><span><b>typed</b> your own value (tap to link again)</span><span>Dashed box: optional</span></div>
+    </div>
+
+    <div class="res" id="res">
+      <div class="seepane">
+        <section class="stage" aria-labelledby="stH">
+          <div class="sthead"><div><h2 id="stH">Furnace view</h2><p class="sub" id="stSub"></p></div>
+            <div class="mode" role="group" aria-label="View"><button type="button" data-m="3d" class="on" aria-pressed="true">3D furnace</button><button type="button" data-m="pci" aria-pressed="false">PCI raceway</button><button type="button" data-m="2d" aria-pressed="false">2D section</button></div></div>
+          <p class="status" id="mStatus"></p>
+          <div class="bsel"><label>Burden <select id="bSrc"><option value="auto">Auto · last charged</option><option value="C-O">C-O · Burden calculator</option><option value="COO">COO · Other charging modes</option><option value="CCO">CCO · Other charging modes</option></select></label><span id="bInfo"></span></div>
+          <div class="banner" id="diagBan" hidden></div>
+          <div class="views" id="views" role="group" aria-label="Field shown"></div>
+          <div id="pciCtl" hidden>
+            <div class="views"><label><input type="checkbox" id="pGas" checked> Gas</label><label><input type="checkbox" id="pCoal" checked> Coal / char</label><label><input type="checkbox" id="pVol" checked> Volatiles</label><label><input type="checkbox" id="pFlame" checked> Flame</label><label><input type="checkbox" id="pCut" checked> Cut-away</label></div>
+            <div class="sliders">
+              <label>Lance depth <input type="range" id="sLd" min="50" max="1200" step="10"> <span id="sLdT"></span></label>
+              <label>Lance angle <input type="range" id="sLa" min="0" max="20" step="0.5"> <span id="sLaT"></span></label>
+              <label>Tuyere angle <input type="range" id="sTa" min="0" max="15" step="0.5"> <span id="sTaT"></span></label>
+              <label>Slow motion <input type="range" id="sSm" min="100" max="3000" step="50" value="500"> <span id="sSmT"></span></label>
+              <label>Particles <input type="range" id="sPn" min="100" max="2000" step="50" value="700"> <span id="sPnT"></span></label>
+            </div>
+            <div class="views" id="pViews"><span class="zl">View</span><button type="button" data-pv="side">Side</button><button type="button" data-pv="lance">Lance tip</button><button type="button" data-pv="nose">Tuyere nose</button><button type="button" data-pv="raceway">Raceway</button></div>
+          </div>
+          <div class="cvwrap" id="wpci" hidden></div>
+          <div class="pkey" id="pKey" hidden><span><i style="background:#262422"></i>Coal heating</span><span><i style="background:#8c2910"></i>Releasing volatiles</span><span><i style="background:#ffb847"></i>Char burning</span><span><i style="background:#8c8c8c"></i>Ash</span><span><i style="background:#ffd9a0;opacity:.6"></i>Volatile flame</span><span><i style="background:linear-gradient(90deg,#1a2e73,#a61f1a,#f2590d,#ffb82e,#fff2bf)"></i>Gas temperature</span></div>
+          <div class="cvwrap" id="w3d"><div class="hud" id="hud3" hidden></div></div>
+          <div class="cvwrap" id="w2d" hidden><canvas id="cv" aria-label="Furnace cross-section coloured by the selected field"></canvas><div class="hud" id="hud" hidden></div></div>
+          <div class="scale"><span id="scLo"></span><canvas id="scale" width="300" height="12" aria-hidden="true"></canvas><span id="scHi"></span></div>
+          <div class="views" id="opt2d"><label><input type="checkbox" id="oIso" checked> Isotherms</label><label><input type="checkbox" id="oCz" checked> Cohesive zone</label><label><input type="checkbox" id="oGas" checked> Gas flow</label></div>
+          <div class="views" id="opt3d"><label><input type="checkbox" id="o3Gas" checked> Gas flow</label><label><input type="checkbox" id="o3Coal" checked> Coal injection</label><label><input type="checkbox" id="o3Cz" checked> Cohesive zone</label><label><input type="checkbox" id="o3Meas" checked> Probe, uptakes, periphery</label><label><input type="checkbox" id="o3Lean" checked> Measured gas lean</label><label><input type="checkbox" id="o3Slice"> Level slice</label><label><input type="checkbox" id="o3Learn"> Learn: name the zones</label></div>
+          <div class="views" id="pre3d" role="group" aria-label="Zoom to"><span class="zl">Zoom to</span><button type="button" data-z="whole">Whole furnace</button><button type="button" data-z="top">Top and probe</button><button type="button" data-z="shaft">Shaft</button><button type="button" data-z="cz">Cohesive zone</button><button type="button" data-z="tuyere">Tuyere, lance, raceway</button><button type="button" data-z="hearth">Hearth and tapholes</button></div>
+          <div class="sliders" id="sl3d"><label>Cut-away <input type="range" id="cut3" min="30" max="200" value="110"></label><label>Slice height <input type="range" id="slh3" min="0" max="1000" value="450"> <span id="slh3t"></span></label></div>
+          <p class="sub" id="stHelp">Drag to turn, pinch or scroll to zoom, two fingers to move. Tap a cut face to read the temperature there. Angles are clockwise from Top temp 1 = 0°; tuyere 1 is drawn at 0°.</p>
+          <p class="sub assume3"><b>Assumed:</b> tapping is good and all coal lances have similar, good flow.</p>
+        </section>
+        <section class="card" id="pciCard" aria-labelledby="pcH" hidden>
+          <header><h2 id="pcH">PCI combustion in the raceway</h2><span class="hint" id="pcInfo"></span></header>
+          <div class="tiles" id="pcTiles"></div>
+          <div class="alerts" id="pcWarn"></div>
+          <div class="two"><div><h3 class="sub2">Conversion against residence time</h3><div class="chart" id="chConv"></div></div><div><h3 class="sub2">Gas along the tuyere axis</h3><div class="chart" id="chGasX"></div></div></div>
+          <div class="two"><div><h3 class="sub2">Gas at the raceway exit</h3><div class="tw" id="pcExit"></div></div><div><h3 class="sub2">By particle size</h3><div class="tw" id="pcCls"></div></div></div>
+        </section>
+        <section class="card" aria-labelledby="rpH">
+          <header><h2 id="rpH">Wall to centre</h2><span class="hint" id="rpAt"></span></header>
+          <div class="lvl"><span>Level</span><input type="range" id="lvl" min="0" max="1000" value="450" aria-label="Height in the furnace"><span id="lvlTxt"></span></div>
+          <div class="chart" id="chRad"></div>
+          <p class="hint">Solid line gas, dashed line burden. Bars: share of the gas going up through each ring at this level.</p>
+        </section>
+      </div>
+
+      <div class="numpane">
+        <section class="card" aria-labelledby="kH"><header><h2 id="kH">Key results</h2><span class="hint" id="runInfo"></span></header><div class="tiles" id="tiles"></div></section>
+        <section class="card" aria-labelledby="dH"><header><h2 id="dH">Calculated against actual</h2><span class="hint">Uptakes, burden probe, periphery</span></header><div class="tw" id="measT"></div><div class="alerts" id="diag"></div></section>
+        <section class="card" aria-labelledby="aH"><h2 id="aH">What to look at</h2><div class="alerts" id="alerts"></div></section>
+        <section class="card" aria-labelledby="zH"><header><h2 id="zH">Zonal temperatures</h2><span class="hint">Gas / burden, °C</span></header><div class="tw" id="zoneT"></div></section>
+        <div class="two">
+          <section class="card" aria-labelledby="vH"><h2 id="vH">Up the furnace</h2><div class="chart" id="chVert"></div><p class="hint">Gas temperature in the wall, intermediate and centre zones against height above the tuyeres.</p></section>
+          <section class="card" aria-labelledby="pH"><h2 id="pH">Pressure</h2><div class="chart" id="chP"></div><p class="hint" id="pNote"></p></section>
+        </div>
+        <div class="two">
+          <section class="card" aria-labelledby="gH"><h2 id="gH">Gas flow by zone</h2><div class="tw" id="gasT"></div></section>
+          <section class="card" aria-labelledby="tpH"><h2 id="tpH">Above the burden</h2><div class="chart" id="chTop"></div><p class="hint">Over-burden probe, P1 wall to P5 centre: model line, your readings as dots. Thin line: CO utilisation by radius.</p></section>
+        </div>
+        <section class="card" aria-labelledby="cH"><header><h2 id="cH">Cohesive zone by ring</h2><span class="hint" id="czInfo"></span></header><div class="tw" id="czT"></div></section>
+        <section class="card" aria-labelledby="bH"><h2 id="bH">Raceway, gas and carbon balance</h2><div class="tw" id="balT"></div></section>
+        <section class="card" aria-labelledby="mH"><h2 id="mH">Model against your measurements</h2><div class="tw" id="cmpT"></div></section>
+        <details class="card how" id="how"><summary><h2>How it is calculated</h2><span class="hint">Methods, equations and limits, for learners and reviewers</span></summary>
+          <div class="hw">
+            <h3>1 · Tuyere and raceway</h3>
+            <p>Raceway flame temperature (RAFT) from a heat balance per minute: hot blast sensible heat + coke carbon entering at 1500 °C + C → CO (110.5 kJ/mol) − H₂O + C → CO + H₂ (131.3 kJ/mol) − PCI heating and decomposition ≈ (250 + 32·VM) kJ/kg = Σ n·ΔH(T) of CO, H₂, N₂ and ash at the flame temperature. Tuyere velocity v = Q·(T/273)·(1.033/(1.033 + BP)) / A; kinetic energy ½·ṁ·v² per tuyere; raceway depth from the kinetic energy (empirical, indicative).</p>
+            <h3>2 · Carbon, oxygen and hydrogen balance</h3>
+            <p>Carbon to gas = coke + nut coke + PCI carbon − carbon in hot metal. Oxygen to gas = blast O + coal O + oxygen removed from the iron oxides (from burden Fe and FeO) + Si and Mn reduction − O taken by H₂. CO₂ = O − C, CO = C − CO₂, so ηCO = CO₂/(CO + CO₂), with ηH₂ ≈ 0.88·ηCO. Direct reduction = (carbon to gas − carbon burnt at the tuyeres − Si/Mn) ÷ oxygen in FeO.</p>
+            <h3>3 · Gas distribution</h3>
+            <p>Every ring of the calculator's burden distribution is a parallel path. Per metre: ΔP/L = A·μ·u + B·ρ·u² (Ergun), with A = 150(1−ε)²/(ε³d²) and B = 1.75(1−ε)/(ε³d), for ore and coke layers in series. At each level the gas splits so that all rings have the same pressure gradient; in the cohesive zone only the coke slits are open; near the tuyeres the raceway and deadman set the split.</p>
+            <h3>4 · Temperatures</h3>
+            <p>In every ring the gas (up) and burden (down) exchange heat: ṁ<sub>g</sub>c<sub>g</sub>dT<sub>g</sub> = −h<sub>v</sub>(T<sub>g</sub>−T<sub>s</sub>)dV and ṁ<sub>s</sub>dH<sub>s</sub> = h<sub>v</sub>(T<sub>g</sub>−T<sub>s</sub>)dV, with the burden enthalpy H<sub>s</sub>(T) holding the heat sinks (moisture, flux calcination, direct reduction and solution loss, melting, Si reduction) and the cooling loss at the wall. Solved implicitly level by level and iterated with the gas split until it settles. The cohesive zone lies between the burden's softening start and melting end temperatures.</p>
+            <h3>5 · PCI in the raceway</h3>
+            <p>Five particle sizes from the grind (Rosin–Rammler through the mean size and the −75 µm share), followed from the lance tip: drag to the gas speed, heating by convection (Nu = 2 + 0.6 Re<sup>½</sup>Pr<sup>⅓</sup>) and radiation; volatiles dV/dt = A<sub>v</sub>e<sup>−E/RT</sup>(V* − V) with V* = Q × proximate VM; char burning by O₂ with kinetics and film diffusion in series, q = p<sub>O₂</sub>/(1/k<sub>s</sub> + 1/k<sub>d</sub>), k<sub>d</sub> = C₁·T<sub>m</sub><sup>0.75</sup>/d (Baum and Street form), then CO₂ gasification. The gas temperature comes from an enthalpy balance at every step with the volatiles, char and the coke at the raceway boundary.</p>
+            <h3>Limits</h3>
+            <p>Reduced-order engineering models, not CFD; axisymmetric in the furnace, one representative tuyere in the raceway. Kinetic and heat-transfer constants are starting values from the literature: fit them to your probe, top gas, pressure and burnout readings ("Fit to my measurements", calibration rows) and compare cases rather than trusting single absolute values. Tapping is assumed good and all coal lances equal.</p>
+          </div>
+        </details>
+        <section class="card" aria-labelledby="oH"><h2 id="oH">Simulation outputs</h2><div class="tw" id="outT"></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap"><button type="button" class="btn" id="bPdf">Save results as PDF</button><button type="button" class="btn" id="bXls">Results to Excel</button></div>
+          <p class="hint">Indicative model. Fit it to your probe, top gas and shaft readings before you act on absolute numbers; trends between two cases are more reliable than single values.</p></section>
+      </div>
+    </div>
+  </div>
+</div>
+<dialog id="dlg"><div class="dh"><h2 id="dlgH" style="font:600 19px var(--f-display)">Import</h2><button type="button" class="btn" id="dlgX">Close</button></div><div class="db" id="dlgB"></div><div class="df" id="dlgF"></div></dialog>
+<div class="toast" id="toast" role="status"></div>
+<iframe id="calcFrame" title="" aria-hidden="true" tabindex="-1" style="position:absolute;width:900px;height:10px;left:-10000px;top:0;border:0;visibility:hidden"></iframe>
+
+<script src="lib/xlsx.full.min.js"></script>
+<script src="engine.js"></script>
+<script src="seed.js"></script>
+<script src="lib/three.min.js"></script>
+<script src="lib/orbit-controls.js"></script>
+<script src="inside-model.js"></script>
+<script src="inside-3d.js"></script>
+<script src="pci-model.js"></script>
+<script src="pci-3d.js"></script>
+<script src="inside-ui.js"></script>
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script src="pay-config.js"></script>
+<script src="ads.js"></script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>

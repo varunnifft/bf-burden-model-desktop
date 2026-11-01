@@ -1,0 +1,16 @@
+/* Sign-in / sign-up page, premium look: the coast-and-furnace sunrise behind a navy glass panel. Same fields and steps. */
+:root { --bg: #071426; --plate: rgba(11,31,56,.82); --plate-2: rgba(18,49,86,.82); --rim: #24466e; --rim-2: #2f5683; --ink: #eef3f8; --ink-2: #c3d0dd; --muted: #9fb2c6; --calc: #ff7a1a }
+html { background: #040c17 }
+body { background:
+  linear-gradient(0deg, rgba(4,12,23,.25), rgba(4,12,23,.9) 70%),
+  url(hero.svg) 26% 100% / cover no-repeat fixed, #071426 }
+.panel { -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); border-radius: 20px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.95) }
+.panel::before { background: linear-gradient(90deg, #19b3b1, #1f8fb3 30%, #ffb547 70%, #ff4d0d) }
+.stream { background: linear-gradient(90deg, #19b3b1, #1f8fb3 30%, #ffb547 70%, #ff4d0d); box-shadow: 0 0 18px rgba(31,143,179,.5) }
+.mark { background: linear-gradient(160deg, rgba(255,255,255,.14), rgba(255,255,255,.04)); border-color: rgba(255,255,255,.2); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px) }
+input { background: rgba(4,12,23,.7) } input:focus { border-color: #1f8fb3; box-shadow: 0 0 0 3px rgba(31,143,179,.35) }
+.btn { background: linear-gradient(180deg, #ff9a3d, #e8590f) }
+.tag { color: #9fe6e3 }
+.pm-sign { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; margin: 26px auto 8px; max-width: 460px; padding: 14px 0 4px;
+  border-top: 1px solid var(--rim); color: var(--muted); font: 500 12px/1.4 var(--f-body); text-align: center }
+.pm-sign img { height: 26px; width: auto; display: block } .pm-sign .l { display: none } .pm-sign b { color: var(--ink-2); font-weight: 600 }

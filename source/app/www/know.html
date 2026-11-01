@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071426">
+<title>Know your input / output</title>
+<link rel="stylesheet" href="fonts.css">
+<style>
+:root { --bg: #edf2f6; --surface: #fff; --surface-2: #f4f7fa; --ink: #0f1b2a; --ink-2: #33475b; --muted: #55667a; --line: #d5dfe8;
+  --in: #0e7f7d; --in-bg: #e2f6f5; --out: #b8410c; --out-bg: #fdeadf; --navy: #071426;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif; --f-body: "IBM Plex Sans", system-ui, sans-serif; --f-mono: "IBM Plex Mono", ui-monospace, monospace }
+@media (prefers-color-scheme: dark) { :root { --bg: #06101c; --surface: #0e1a29; --surface-2: #132235; --ink: #eaf1f7; --ink-2: #b7c5d3; --muted: #8fa1b4; --line: #22344a;
+  --in: #5fe0db; --in-bg: #0c2f33; --out: #ffaa70; --out-bg: #36200f; color-scheme: dark } }
+* { box-sizing: border-box }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--f-body);
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) 20px max(14px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 1060px; margin: 0 auto }
+.head { position: relative; overflow: hidden; border-radius: 18px; padding: 22px 22px 20px; color: #eef3f8;
+  background: linear-gradient(100deg, rgba(4,12,23,.94) 0%, rgba(7,20,38,.82) 55%, rgba(7,20,38,.35)), url(hero.svg) 70% 60% / cover, #0b1f38 }
+.head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: linear-gradient(90deg, #19b3b1, #1f8fb3 30%, #ffb547 70%, #ff4d0d) }
+.head a.back { display: inline-flex; align-items: center; min-height: 40px; padding: 8px 14px; border-radius: 10px; color: #dce7f1; text-decoration: none; font-weight: 600; font-size: 14px;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.2) }
+.head h1 { color: #fff !important; margin: 14px 0 4px; font: 700 40px/1 var(--f-display); letter-spacing: .04em; text-transform: uppercase }
+.head p { margin: 0; color: #c3d0dd; max-width: 70ch }
+.legend { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px; font-size: 13px }
+.badge { display: inline-block; font: 700 11px/1 var(--f-mono); letter-spacing: .06em; padding: 5px 7px; border-radius: 6px; vertical-align: middle }
+.badge.in { color: var(--in); background: var(--in-bg); border: 1px solid color-mix(in srgb, var(--in) 45%, transparent) }
+.badge.out { color: var(--out); background: var(--out-bg); border: 1px solid color-mix(in srgb, var(--out) 45%, transparent) }
+.head .badge.in { color: #04201f; background: #5fe0db; border: 0 } .head .badge.out { color: #1a0900; background: #ffaa70; border: 0 }
+.tools { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 10px 0; margin-top: 6px; background: var(--bg) }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap }
+.tabs button { min-height: 42px; padding: 9px 14px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); font: 600 14px var(--f-body); cursor: pointer }
+.tabs button[aria-selected="true"] { background: linear-gradient(180deg, #e2621a, #b8410c); color: #fff; border-color: #b8410c }
+.tools input { flex: 1 1 220px; min-height: 42px; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: 15px var(--f-body) }
+.tools input:focus { outline: 2px solid rgba(31,143,179,.45); border-color: #1f8fb3 }
+section.mod { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; margin: 12px 0; overflow: hidden; box-shadow: 0 14px 30px -26px rgba(7,20,38,.6) }
+section.mod > h2 { margin: 0; padding: 14px 16px; font: 700 22px/1.1 var(--f-display); letter-spacing: .03em; text-transform: uppercase; display: flex; align-items: center; gap: 10px;
+  border-bottom: 1px solid var(--line); background: var(--surface-2) }
+section.mod > h2::before { content: ""; width: 5px; height: 1.1em; border-radius: 3px; background: var(--c, #ff7a1a) }
+section.mod > p.intro { margin: 10px 16px 0; color: var(--muted); font-size: 14px }
+h3.grp { margin: 14px 16px 6px; font: 600 15px var(--f-body); color: var(--ink-2); display: flex; align-items: center; gap: 8px }
+.tw { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 16px 12px; border: 1px solid var(--line); border-radius: 10px }
+table { border-collapse: collapse; width: 100%; font-size: 14px }
+th { text-align: left; font: 600 12px var(--f-mono); letter-spacing: .04em; text-transform: uppercase; color: var(--muted); background: var(--surface-2); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap }
+td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top }
+tr:last-child td { border-bottom: 0 }
+td.nm { font-weight: 600; min-width: 150px } td.u { font-family: var(--f-mono); font-size: 13px; color: var(--ink-2); white-space: nowrap }
+.xl { margin: 0 16px 12px; border: 1px solid #9fc5a8; border-radius: 10px; overflow: auto; background: #fff }
+.xl table { font: 13px/1.3 Calibri, "IBM Plex Sans", sans-serif; color: #111; min-width: 420px }
+.xl th, .xl td { border: 1px solid #d4d4d4; padding: 5px 8px; text-transform: none; letter-spacing: 0; font: inherit; color: #111; white-space: nowrap }
+.xl thead th { background: #e7f1e9; font-weight: 700 } .xl td.rh, .xl th.rh { background: #f3f3f3; color: #666; text-align: center; width: 34px }
+.xl .tab { display: inline-block; padding: 4px 12px; background: #fff; border: 1px solid #9fc5a8; border-top: 0; border-radius: 0 0 6px 6px; font: 600 12px Calibri, sans-serif; color: #1d6f2f; margin: 0 0 0 8px }
+ul.notes { margin: 0 16px 14px; padding-left: 20px; color: var(--ink-2); font-size: 14px } ul.notes li { margin: 3px 0 }
+.empty { padding: 30px; text-align: center; color: var(--muted) }
+mark { background: #ffe39a; color: inherit; border-radius: 3px }
+@media (max-width: 560px) { .head h1 { font-size: 32px } td.nm { min-width: 120px } }
+</style>
+<link rel="stylesheet" href="premium.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="index.html">‹ Home</a>
+    <h1>Know your input / output</h1>
+    <p id="lead">What every input means, its unit, what each result tells you, and how the Excel files the app reads must be laid out.</p>
+    <div class="legend"><span><span class="badge in">IN</span> you type or import it</span><span><span class="badge out">OUT</span> the app calculates it</span></div>
+  </header>
+  <div class="tools">
+    <div class="tabs" role="tablist" id="tabs">
+      <button role="tab" data-v="in" aria-selected="true">Inputs</button>
+      <button role="tab" data-v="out" aria-selected="false">Outputs</button>
+      <button role="tab" data-v="xl" aria-selected="false">Excel upload format</button>
+    </div>
+    <input type="search" id="q" placeholder="Search a parameter, e.g. ore/coke, B2, angle" aria-label="Search parameters">
+  </div>
+  <main id="main"></main>
+</div>
+<script src="know-data.js"></script>
+<script>
+(function () {
+  'use strict';
+  var K = window.KNOW || { modules: [], excel: [] }, view = 'in', q = '';
+  try { var h = location.hash.slice(1); if (h === 'in' || h === 'out' || h === 'xl') view = h; } catch (e) { }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function hi(s) { s = esc(s); if (!q) return s; var i = s.toLowerCase().indexOf(q.toLowerCase()); return i < 0 ? s : s.slice(0, i) + '<mark>' + s.slice(i, i + q.length) + '</mark>' + s.slice(i + q.length); }
+  function match(r) { return !q || r.join(' ').toLowerCase().indexOf(q.toLowerCase()) >= 0; }
+  function drawParams(kind) {
+    var h = [];
+    K.modules.forEach(function (m) {
+      var gs = (m.groups || []).filter(function (g) { return g.kind === kind; }), body = [];
+      gs.forEach(function (g) {
+        var rows = g.rows.filter(match); if (!rows.length) return;
+        body.push('<h3 class="grp"><span class="badge ' + kind + '">' + kind.toUpperCase() + '</span>' + esc(g.title) + '</h3><div class="tw"><table><thead><tr><th>Parameter</th><th>Unit</th><th>Meaning</th></tr></thead><tbody>' +
+          rows.map(function (r) { return '<tr><td class="nm">' + hi(r[0]) + '</td><td class="u">' + esc(r[1] || '–') + '</td><td>' + hi(r[2]) + '</td></tr>'; }).join('') + '</tbody></table></div>');
+      });
+      if (body.length) h.push('<section class="mod" style="--c:' + (m.color || '#ff7a1a') + '"><h2>' + esc(m.title) + '</h2>' + (m.intro && !q ? '<p class="intro">' + esc(m.intro) + '</p>' : '') + body.join('') + '</section>');
+    });
+    return h.join('') || '<p class="empty">Nothing matches “' + esc(q) + '”.</p>';
+  }
+  function drawExcel() {
+    return K.excel.filter(function (x) { return match([x.title, x.intro].concat((x.notes || []))); }).map(function (x) {
+      var t = x.sheet, cols = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var grid = '<div class="xl"><table><thead><tr><th class="rh"></th>' + t.cols.map(function (c, i) { return '<th>' + cols[i] + '</th>'; }).join('') + '</tr></thead><tbody>' +
+        [t.cols].concat(t.rows).map(function (r, i) { return '<tr><td class="rh">' + (i + 1) + '</td>' + r.map(function (c) { return '<td' + (i === 0 ? ' style="font-weight:700;background:#f7fbf8"' : '') + '>' + esc(c) + '</td>'; }).join('') + '</tr>'; }).join('') +
+        '</tbody></table><span class="tab">' + esc(t.name) + '</span></div>';
+      return '<section class="mod" style="--c:#1d6f2f"><h2>' + esc(x.title) + '</h2><p class="intro">' + esc(x.intro) + '</p>' + grid +
+        '<ul class="notes">' + (x.notes || []).map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('') + '</ul></section>';
+    }).join('') || '<p class="empty">Nothing matches “' + esc(q) + '”.</p>';
+  }
+  function draw() {
+    document.getElementById('main').innerHTML = view === 'xl' ? drawExcel() : drawParams(view);
+    [].forEach.call(document.querySelectorAll('#tabs button'), function (b) { b.setAttribute('aria-selected', b.getAttribute('data-v') === view ? 'true' : 'false'); });
+  }
+  document.getElementById('tabs').addEventListener('click', function (e) {
+    var v = e.target.getAttribute && e.target.getAttribute('data-v'); if (!v) return;
+    view = v; try { history.replaceState(null, '', '#' + v); } catch (x) { } draw(); window.scrollTo(0, 0);
+  });
+  document.getElementById('q').addEventListener('input', function (e) { q = e.target.value.trim(); draw(); });
+  if (K.lead) document.getElementById('lead').textContent = K.lead;
+  draw();
+})();
+</script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>

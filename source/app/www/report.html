@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" class="pm-forge" data-theme="light">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15171a">
+<title>Report · BF Model</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="forge.css">
+<link rel="stylesheet" href="premium.css">
+<style>
+/* Report: one printable sheet on the graphite desk. The sheet is always light so it reads the same on screen and in the PDF. */
+:root {
+  --desk: #121416; --paper: #ffffff; --paper-2: #f7f5f1; --ink: #16181b; --ink-2: #3f434a; --muted: #5d636b; --line: #e3ddd3;
+  --hot: #c2410c; --coke: #2f62a8; --ore: #c4622d; --good: #23703a; --warn: #9a4a00; --rep: #1f8a5b;
+  --molten: linear-gradient(90deg, #ff3d00 0%, #ff7a1a 45%, #ffc23d 100%);
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+html { background: var(--desk) }
+body { margin: 0; color: var(--ink); font: 14px/1.45 var(--f-body);
+  background: radial-gradient(900px 420px at 80% -10%, rgba(255,106,26,.16), transparent 65%), repeating-linear-gradient(135deg, rgba(255,255,255,.018) 0 2px, transparent 2px 9px), var(--desk);
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 980px; margin: 0 auto }
+[hidden] { display: none !important }
+
+/* action bar */
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 0 0 14px; padding: 12px; border-radius: 14px;
+  background: linear-gradient(180deg, #23262b, #191b1f); border: 1px solid #2c3035; color: #e4e0d9 }
+.bar .t { flex: 1 1 220px; min-width: 0 }
+.bar .t b { display: block; font: 700 20px/1.1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: #fff }
+.bar .t span { font-size: 12.5px; color: #b3aea6 }
+.bar button { font: 600 14px/1 var(--f-body); border-radius: 9px; padding: 12px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; -webkit-tap-highlight-color: transparent }
+.bar button svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round }
+.bar .dl { background: linear-gradient(180deg, #ff9a3d, #ec5f12); color: #1a0900; border: 1px solid #ffb066; box-shadow: 0 4px 16px -6px rgba(255,106,26,.85) }
+.bar .dl.locked { background: #2c3035; color: #e4e0d9; border-color: #3a3f46; box-shadow: none }
+.bar .pay { background: linear-gradient(180deg, #3fcf8e, #1f8a5b); color: #04150c; border: 1px solid #6fe0ac }
+.bar .ghost { background: rgba(255,255,255,.06); color: #e4e0d9; border: 1px solid rgba(255,255,255,.14) }
+.bar button:focus-visible { outline: 2px solid #ffb547; outline-offset: 2px }
+.price { font: 600 12px var(--f-mono); background: rgba(0,0,0,.18); padding: 3px 6px; border-radius: 5px }
+.paynote { flex-basis: 100%; font-size: 12.5px; color: #c8c3bb; margin: 0 }
+
+/* sheet */
+.sheet { background: var(--paper); border-radius: 16px; overflow: hidden; box-shadow: 0 30px 60px -30px rgba(0,0,0,.9), 0 0 0 1px rgba(255,122,26,.12) }
+.mast { position: relative; background: linear-gradient(160deg, #26292e, #15171a 70%); color: #fff; padding: 22px 24px 20px; display: grid; grid-template-columns: auto 1fr auto; gap: 6px 16px; align-items: center }
+.mast::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--molten) }
+.mast .mark { width: 54px; height: 54px; border-radius: 13px; display: grid; place-items: center; background: linear-gradient(160deg, #2b2f35, #16181b); border: 1px solid #3a3f46; box-shadow: 0 0 24px -6px rgba(255,106,26,.6) }
+.mast .mark svg { width: 36px; height: 36px }
+.mast h1 { margin: 0; font: 700 34px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase }
+.mast h1 .hot { background: var(--molten); -webkit-background-clip: text; background-clip: text; color: transparent }
+.mast .sub { margin: 4px 0 0; font: 500 14px var(--f-display); letter-spacing: .16em; text-transform: uppercase; color: #c8c3bb }
+.mast .meta { text-align: right; font: 500 12px/1.6 var(--f-mono); color: #d9d4cc }
+.mast .meta b { color: #ffb547; font-weight: 500 }
+@media (max-width: 640px) { .mast { grid-template-columns: auto 1fr } .mast .meta { grid-column: 1 / -1; text-align: left } .mast h1 { font-size: 28px } }
+.who { display: flex; flex-wrap: wrap; gap: 6px 22px; padding: 12px 24px; background: var(--paper-2); border-bottom: 1px solid var(--line); font-size: 12.5px; color: var(--ink-2) }
+.who b { color: var(--ink); font-weight: 600 }
+.body { padding: 18px 24px 24px; display: grid; gap: 22px }
+@media (max-width: 640px) { .body { padding: 16px 14px 20px } .who { padding: 10px 14px } .mast { padding: 18px 14px 18px } }
+
+/* hero figures */
+.hero { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px }
+.fig { position: relative; border: 1px solid var(--line); border-radius: 12px; padding: 12px 12px 10px 16px; background: linear-gradient(180deg, #fff, #fbf9f6); overflow: hidden }
+.fig::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, #ffc23d, #ff3d00) }
+.fig span { display: block; font: 600 11px/1.2 var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted) }
+.fig b { display: block; font: 600 28px/1.1 var(--f-display); letter-spacing: .02em; margin-top: 4px; color: var(--ink) }
+.fig b small { font: 500 13px var(--f-body); color: var(--muted); margin-left: 3px }
+.fig i { display: block; font: normal 11.5px var(--f-body); color: var(--muted); margin-top: 2px }
+
+/* sections */
+section { break-inside: auto }
+.sh { display: flex; align-items: baseline; gap: 10px; margin: 0 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink) }
+.sh .n { font: 700 15px var(--f-mono); color: var(--hot) }
+.sh h2 { margin: 0; font: 700 21px/1.1 var(--f-display); letter-spacing: .07em; text-transform: uppercase }
+.sh .from { margin-left: auto; font-size: 11.5px; color: var(--muted); text-align: right }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px }
+.two.mx { grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr); align-items: start }
+@media (max-width: 760px) { .two, .two.mx { grid-template-columns: minmax(0, 1fr) } }
+h3 { margin: 4px 0 6px; font: 600 15px var(--f-display); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-2) }
+.tw { overflow-x: auto }
+table { width: 100%; border-collapse: collapse; font-size: 13px }
+th { text-align: right; font: 600 11px var(--f-body); letter-spacing: .05em; text-transform: uppercase; color: var(--muted); padding: 6px 6px; border-bottom: 1px solid var(--line); white-space: nowrap }
+td { padding: 6px 6px; border-bottom: 1px solid var(--line); text-align: right; font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+th:first-child, td:first-child { text-align: left; font-family: var(--f-body) }
+td:first-child { white-space: normal }
+td small { color: var(--muted); font: 11px var(--f-body); margin-left: 4px }
+tr.grp td { background: var(--paper-2); font: 600 11px var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2) }
+tr.tot td { font-weight: 600; border-top: 1px solid var(--ink); border-bottom: 0 }
+td .ok { color: var(--good) } td .bad { color: var(--warn) }
+.mute { color: var(--muted) }
+.chip { display: inline-block; font: 600 11px var(--f-body); padding: 2px 7px; border-radius: 99px; background: #fde9dc; color: #8a2f08 }
+
+/* burden ratio */
+.ratio { display: grid; gap: 10px }
+.ratio .big { font: 600 26px/1.15 var(--f-display); letter-spacing: .03em }
+.ratio .big em { font-style: normal; color: var(--muted); font-size: 18px; margin: 0 4px }
+.stack { display: flex; height: 26px; border-radius: 8px; overflow: hidden; border: 1px solid var(--line) }
+.stack i { display: block; height: 100% }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 12.5px; color: var(--ink-2) }
+.legend span { display: inline-flex; align-items: center; gap: 6px }
+.legend i { width: 11px; height: 11px; border-radius: 3px; display: inline-block }
+
+/* diagrams */
+.diagram { border: 1px solid var(--line); border-radius: 12px; background: radial-gradient(circle at 50% 45%, #fff, #f4f1ec); padding: 10px; display: grid; gap: 6px; justify-items: center }
+.diagram svg { width: 100%; max-width: 360px; height: auto; display: block }
+.diagram text { font-family: var(--f-body) }
+.chart svg { width: 100%; height: auto; display: block }
+.chart text { font: 10.5px var(--f-body); fill: var(--muted) }
+.cap { font-size: 11.5px; color: var(--muted); margin: 6px 0 0 }
+
+/* suggestions */
+.sugs { display: grid; gap: 8px }
+.sug { display: grid; grid-template-columns: 96px 1fr; gap: 10px; align-items: start; border: 1px solid var(--line); border-left: 4px solid #2a9db0; border-radius: 8px; padding: 8px 10px; background: #f6fbfc; break-inside: avoid }
+.sug.hi { border-left-color: #e8862a; background: #fff8ef }
+.sug .tg { font: 600 11px var(--f-body); letter-spacing: .06em; text-transform: uppercase; color: var(--ink-2); padding-top: 2px }
+.sug p { margin: 0; font-size: 13px }
+@media (max-width: 520px) { .sug { grid-template-columns: 1fr; gap: 2px } }
+/* warnings */
+.alerts { display: grid; gap: 6px }
+.alert { border-left: 4px solid #e8862a; background: #fff6ec; color: #6a3300; border-radius: 6px; padding: 8px 10px; font-size: 13px }
+.okline { border-left: 4px solid var(--good); background: #edf7ef; color: #1b5a2e; border-radius: 6px; padding: 8px 10px; font-size: 13px }
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; padding: 12px 24px; background: #15171a; color: #b3aea6; font: 500 11px var(--f-mono); letter-spacing: .04em; border-top: 3px solid #ff7a1a }
+.empty { text-align: center; padding: 26px 10px; color: var(--muted) }
+.empty a { color: var(--hot); font-weight: 600 }
+.loading { color: var(--muted); font-size: 12.5px }
+
+/* pay dialog */
+.dlg { position: fixed; inset: 0; z-index: 60; background: rgba(8,9,11,.72); display: grid; place-items: center; padding: 16px }
+.dlg .box { width: min(440px, 100%); background: #1b1e22; color: #ece8e1; border: 1px solid #34383e; border-radius: 16px; padding: 20px; box-shadow: 0 30px 60px -20px #000; position: relative; overflow: hidden }
+.dlg .box::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--molten) }
+.dlg h2 { margin: 4px 0 6px; font: 700 24px var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: #fff }
+.dlg p { margin: 6px 0; font-size: 14px; color: #c8c3bb }
+.dlg .amt { font: 700 40px var(--f-display); color: #3fcf8e; margin: 6px 0 }
+.dlg input { width: 100%; font: 14px var(--f-mono); padding: 11px 12px; border-radius: 9px; border: 1px solid #3a3f46; background: #121416; color: #fff; margin-top: 6px }
+.dlg .row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px }
+.dlg button { font: 600 14px var(--f-body); border-radius: 9px; padding: 11px 16px; cursor: pointer; border: 1px solid #3a3f46; background: #2c3035; color: #ece8e1 }
+.dlg button.go { background: linear-gradient(180deg, #3fcf8e, #1f8a5b); color: #04150c; border-color: #6fe0ac }
+.toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%) translateY(20px); opacity: 0; transition: .2s; background: #15171a; color: #fff; border: 1px solid #ff7a1a; padding: 10px 16px; border-radius: 10px; font-size: 13.5px; z-index: 70; pointer-events: none; max-width: 90vw }
+.toast.show { opacity: 1; transform: translateX(-50%) }
+
+/* print / PDF: the sheet only, A4 */
+@page { size: A4; margin: 10mm }
+@media print {
+  html, body { background: #fff !important; padding: 0 !important }
+  body * { -webkit-print-color-adjust: exact; print-color-adjust: exact }
+  .bfnav, .bar, .dlg, .toast, #calcFrame { display: none !important }
+  .wrap { max-width: none }
+  .sheet { box-shadow: none; border-radius: 0 }
+  .hero { grid-template-columns: repeat(4, 1fr) }
+  .two { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) }
+  .two.mx { grid-template-columns: minmax(0, 1fr) }
+  .two.mx .diagram svg { max-width: 300px }
+  section { break-inside: avoid } section.long { break-inside: auto }
+  .sh, .fig, tr, .diagram, .chart, .ratio { break-inside: avoid }
+  .sh { break-after: avoid }
+  .tw { overflow: visible }
+  table { font-size: 11px } td, th { padding: 4px 5px }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="bfnav" id="nav" aria-label="Pages"></nav>
+
+  <div class="bar" role="toolbar" aria-label="Report">
+    <div class="t"><b>Report</b><span id="barSub">Batch chemistry and burden calculator results in one sheet</span></div>
+    <button type="button" class="ghost" id="refresh" title="Recalculate from the latest inputs"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/></svg>Refresh</button>
+    <button type="button" class="pay" id="pay"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3zM3 11h18M7 15h4"/></svg><span>Subscription</span></button>
+    <button type="button" class="dl" id="download"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M4 17v3h16v-3"/></svg><span>Download PDF</span></button>
+    <p class="paynote" id="payNote" hidden></p>
+  </div>
+
+  <article class="sheet" id="sheet">
+    <header class="mast">
+      <div class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><defs><linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3e6ea"/><stop offset="1" stop-color="#8a9097"/></linearGradient><linearGradient id="hm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset="1" stop-color="#ffc23d"/></linearGradient></defs><path d="M13 3h6v4l5 12v2l-2 5v1H10v-1l-2-5v-2l5-12z" fill="url(#st)"/><path d="M11.5 11h9M10 15h12M9.2 19h13.6" stroke="#4a5058" stroke-width=".8"/><path d="M10 26h12v3H10z" fill="url(#hm)"/><path d="M22 27c3 0 4 1 5 3" stroke="#ffc23d" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div>
+      <div><h1>BF <span class="hot">Model</span> Report</h1><p class="sub">Burden chemistry · Distribution · Charging</p></div>
+      <div class="meta" id="meta"></div>
+    </header>
+    <div class="who" id="who"></div>
+    <div class="body" id="body"><p class="loading">Preparing the report…</p></div>
+    <footer class="foot"><span id="footL">BF MODEL</span><span>CALCULATED ON THIS DEVICE · CHECK AGAINST PLANT DATA BEFORE USE</span></footer>
+  </article>
+</div>
+
+<div class="toast" id="toast" role="status"></div>
+<iframe id="calcFrame" title="" aria-hidden="true" tabindex="-1" style="position:absolute;width:900px;height:10px;left:-10000px;top:0;border:0;visibility:hidden"></iframe>
+
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script src="pay-config.js"></script>
+<script src="engine.js"></script>
+<script src="seed.js"></script>
+<script src="report.js"></script>
+<script src="trial.js"></script>
+<script src="paywall.js"></script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>

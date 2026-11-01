@@ -1,0 +1,13 @@
+/* Burden calculator defaults and labels, copied from calculator.html (keep in step when the calculator changes) */
+window.BF_CALC_DEF = (function () {
+  var PROPS = { coke: [0.5, 0.45, 35], sinter: [1.75, 0.36, 33], pellet: [2.2, 0.30, 27], ore: [2.3, 0.40, 36], clo: [2.3, 0.40, 36], lime: [1.5, 0.38, 38],
+  dolo: [1.6, 0.38, 38], pyrox: [1.6, 0.38, 38], quartz: [1.5, 0.38, 37], mn: [2.0, 0.40, 36], nut: [0.5, 0.42, 34] };
+  var MOIST = { mainCoke: 5, yardCoke: 5, sinter: 0.5, pellet: 2, ore: 3, clo: 3, lime: 1, dolo: 1, pyrox: 2, quartz: 1, mn: 2, nut: 8 };
+  var FIELDS = { throatD: 6.0, Reff: 2.95, throatH: 1.8, shaftH: 13.0, bellyD: 9.0, bellyH: 1.8, boshH: 3.2, hearthD: 7.6, L: 2.8, Hp: 2.8, e: 0, rpm: 8.0, hG: 2.5, kImp: 0.6, stock: 1.5, wC: 0.30, wO: 0.25, tankV: null, oreMax: null,
+  cokeBase: 7000, yardPct: 0, oc: 4.2, sinterPct: 65, pelletPct: 20, cloPct: 10, nut: 500, lime: 0, dolo: 200, pyrox: 0, quartz: 0, mn: 0, pre: 5 };
+  Object.assign(FIELDS, { BV: 2000, O2: 5000, TP: 1.2, BP: 2.6, Ttop: 150 });
+  var MATRIX = [[12, 3, 12, 0], [20, 1, 20, 1], [25, 1, 25, 2], [28, 1, 28, 2], [31, 1, 31, 2], [33, 1, 33, 2], [35, 2, 35, 1], [37, 2, 37, 0], [39, 0, 39, 0]];
+  var MPS = { mainCoke: 50, yardCoke: 45, sinter: 18, pellet: 12, ore: 22, clo: 15, lime: 30, dolo: 30, pyrox: 25, quartz: 25, mn: 25, nut: 20 };
+  var LABELS = {"throatD": "Throat diameter (m)", "Reff": "Wall landing limit (m from axis)", "throatH": "Throat height (m)", "shaftH": "Shaft height (m)", "bellyD": "Belly diameter (m)", "bellyH": "Belly height (m)", "boshH": "Bosh height (m)", "hearthD": "Hearth diameter (m)", "L": "Chute length (m)", "Hp": "Pivot above zero stockline (m)", "e": "Pivot offset from axis (m)", "rpm": "Chute speed (r/min)", "hG": "Gate to chute drop (m)", "kImp": "Impact speed kept (0–1)", "stock": "Stockline before coke (m)", "wC": "Stream spread, coke (± m)", "wO": "Stream spread, ore (± m)", "tankV": "Burden tank volume (m³, optional)", "oreMax": "Max ore batch (kg, optional)", "cokeBase": "Coke base (kg, dry)", "yardPct": "Yard / second coke (%)", "oc": "Ore / coke", "sinterPct": "Sinter (%)", "pelletPct": "Pellet (%)", "cloPct": "Lump CLO (%)", "nut": "Nut coke (kg, dry)", "lime": "Limestone (kg)", "dolo": "Dolomite (kg)", "pyrox": "Paraxonite (kg)", "quartz": "Quartz (kg)", "mn": "Mn ore (kg)", "pre": "Charges before the reported one", "BV": "Blast volume (Nm³/min)", "O2": "Oxygen flow (Nm³/h)", "TP": "Top pressure (kg/cm² g)", "BP": "Blast pressure (kg/cm² g)", "Ttop": "Top gas temperature (°C)"};
+  return { f: FIELDS, moist: MOIST, mps: MPS, props: PROPS, mx: MATRIX, order: 'out', mode: 'extended', gas: 'on', labels: LABELS };
+})();

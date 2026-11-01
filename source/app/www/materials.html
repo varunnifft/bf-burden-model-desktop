@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en" class="pm-forge">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#15171a">
+<title>Fact must know · BF Model</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="forge.css">
+<link rel="stylesheet" href="premium.css">
+<style>
+/* Fact must know (was "Material based suggestion"): live 3D degradation model of coke, sinter, pellet and lump ore, started from this plant's
+   burden (batch chemistry analysis, calculator particle sizes), with suggestions that update as the sliders move. */
+:root {
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --bad: #b3261e; --ok: #23703a;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bad: #ff8a80; --ok: #72c784 } }
+* { box-sizing: border-box }
+.wrap > *, .lay > *, .two > * { min-width: 0 }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--f-body);
+  padding: max(14px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 40px max(16px, env(safe-area-inset-left, 0px)) }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 14px }
+.top h1 { margin: 0; font: 700 34px/1.05 var(--f-display); letter-spacing: .02em; text-transform: uppercase }
+.top p { margin: 6px 0 0; color: var(--ink-2); max-width: 90ch }
+.hide { display: none !important }
+.tabs { display: flex; gap: 8px; flex-wrap: wrap }
+.tabs button { font: 600 14px/1 var(--f-body); padding: 11px 16px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; display: inline-flex; gap: 8px; align-items: center }
+.tabs button i { width: 12px; height: 12px; border-radius: 50%; display: inline-block }
+.tabs button.on { background: linear-gradient(180deg, #d4500f, #a8360a); border-color: #a8360a; color: #fff }
+.tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 14px; box-shadow: 0 10px 22px -18px rgba(60,30,0,.45) }
+h2 { margin: 0 0 8px; font: 700 19px/1.15 var(--f-display); letter-spacing: .07em; text-transform: uppercase; color: var(--ink); display: flex; align-items: center }
+h2::before { content: ""; width: 4px; height: 1em; border-radius: 2px; background: linear-gradient(180deg, #ffc23d, #ff3d00); margin-right: 8px; flex: none }
+.note { color: var(--ink-2); margin: 0 }
+.lay { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 14px; align-items: start }
+@media (max-width: 900px) { .lay { grid-template-columns: minmax(0, 1fr) } }
+.stage { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid #2c3035;
+  background: radial-gradient(700px 360px at 50% 35%, #2a2e34, #121416 75%) }
+.stage::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--molten) }
+#cv { width: 100%; height: 470px; display: block; touch-action: none; cursor: grab }
+@media (max-width: 900px) { #cv { height: 380px } }
+.stage .cap { position: absolute; left: 12px; top: 10px; font: 600 11px var(--f-mono); letter-spacing: .06em; color: #b3aea6; text-transform: uppercase }
+.hint { font-size: 12px; color: var(--muted); margin: 6px 2px 0 }
+.sl { margin: 10px 0 }
+.sl label { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; color: var(--ink-2) }
+.sl label b { font: 500 13px var(--f-mono); color: var(--ink) }
+.sl label small { color: var(--muted); font: 11px var(--f-body) }
+input[type=range] { width: 100%; accent-color: #d4500f; height: 26px }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px }
+.btn { font: 600 13px/1 var(--f-body); padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--surface-2); color: var(--ink); cursor: pointer }
+.m { display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); padding: 6px 0; font-size: 13.5px }
+.m b { font: 500 14px var(--f-mono); font-variant-numeric: tabular-nums }
+.bad { color: var(--bad) } .good { color: var(--ok) }
+.mine { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; margin-top: 4px }
+.mine div { background: var(--surface-2); border-left: 3px solid #ff7a1a; border-radius: 6px; padding: 6px 9px }
+.mine span { display: block; font-size: 10.5px; letter-spacing: .05em; text-transform: uppercase; color: var(--muted) }
+.mine b { font: 500 16px var(--f-mono) }
+.sugs { display: grid; gap: 8px; margin-top: 4px }
+.sug { border: 1px solid var(--line); border-left: 4px solid #2a9db0; border-radius: 8px; padding: 8px 10px; font-size: 13.5px; background: var(--surface-2) }
+.sug.hi { border-left-color: #e8862a }
+.sug.ok { border-left-color: var(--ok) }
+.sug b { font-weight: 600 }
+.sc { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; min-width: 620px; font-size: 13px }
+th, td { border-bottom: 1px solid var(--line); padding: 8px 9px; text-align: left; vertical-align: top }
+th { font: 600 11px var(--f-body); letter-spacing: .05em; text-transform: uppercase; color: var(--muted) }
+.tag { color: var(--accent); font-weight: 600 }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px }
+@media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr) } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="bfnav" id="nav" aria-label="Pages"></nav>
+  <div class="top">
+    <h1>Fact must know</h1>
+    <p>Coke, sinter, pellet and lump ore as live 3D lumps. The sliders start from your burden (Batch chemistry analysis and the calculator's particle sizes); move them to see degradation, fines, permeability and coke rate change, with suggestions that update as you go. The model is indicative, not plant-calibrated.</p>
+  </div>
+  <div class="tabs" id="tb" role="tablist"></div>
+
+  <div id="mat" class="wrap" style="gap:14px">
+    <div class="card"><h2 id="mineH">Your burden</h2><p class="note" id="mineNote"></p><div class="mine" id="mine"></div></div>
+    <div class="lay">
+      <div>
+        <div class="stage"><span class="cap">Combined · one lump per single factor</span><canvas id="cv" aria-label="3D lumps of the selected material: the combined effect and one lump for each factor"></canvas></div>
+        <p class="hint">Drag a lump to turn it. Specks flying off are fines; the wire mesh shows cracking. Pellet swells; coke, sinter and ore shrink or break up.</p>
+        <p class="note" id="note" style="margin-top:8px"></p>
+      </div>
+      <div class="card">
+        <h2>Settings</h2>
+        <div id="sl"></div>
+        <div class="btns"><button type="button" class="btn" id="rs">Reset to my burden</button><button type="button" class="btn" id="rt">Typical values</button></div>
+        <h2 style="margin-top:16px">Result</h2>
+        <div id="out"></div>
+        <p class="hint">Coke rate change is against your burden's starting values. Rules of thumb only.</p>
+        <h2 style="margin-top:16px">Suggestions</h2>
+        <div class="sugs" id="sugs" aria-live="polite"></div>
+      </div>
+    </div>
+    <div class="card"><h2 id="th"></h2><div class="sc"><table id="tbl"></table></div></div>
+  </div>
+
+  <div id="cmp" class="hide" style="display:grid;gap:14px">
+    <div class="card"><h2>Material comparison</h2><div class="sc"><table><tr><th>Material</th><th>Role</th><th>Main degradation mechanism</th><th>Key tests</th><th>Furnace risk if poor</th></tr>
+      <tr><td class="tag">Coke</td><td>Fuel, reductant, permeable support (deadman, cohesive-zone "windows")</td><td>Solution loss C + CO₂ → 2CO (above ~1000 °C), alkali catalysis, abrasion, thermal shock</td><td>CRI / CSR, M40 / M10, ash, alkali, size</td><td>Fines in raceway and deadman, high ΔP, higher coke rate</td></tr>
+      <tr><td class="tag">Sinter</td><td>Main Fe-bearing burden (~50–70 %), self-fluxing</td><td>Low-temperature reduction disintegration (RDI): hematite → magnetite expansion at 450–650 °C</td><td>RDI +3.15 mm, TI, RI, FeO, B2, Al₂O₃</td><td>Fines in upper stack, gas channelling, uneven reduction</td></tr>
+      <tr><td class="tag">Pellet</td><td>High-grade Fe burden (~20–40 %), uniform spheres</td><td>Reduction swelling (iron whiskers, ~900–1000 °C), loss of strength</td><td>CCS, RSI swelling, RI, tumble index, size</td><td>Abnormal swelling, burden slips, fines, scaffolding</td></tr>
+      <tr><td class="tag">Lump ore</td><td>Cheap direct charge (~0–20 %)</td><td>Thermal decrepitation (300–700 °C), loss of combined water (goethite), RDI</td><td>DI, RDI, LOI, RI, size, gangue</td><td>Decrepitated fines, poor permeability, slag volume</td></tr></table></div></div>
+    <div class="card"><h2>How they interact in the furnace</h2><p class="note">Burden fines (sinter, ore) raise the pressure drop in the stack, while weak coke (low CSR) loses its open "windows" in the cohesive zone and the deadman fills with fines. Together they cause gas channelling, unstable descent and a higher coke rate. Good practice is a screened burden (little under 5 mm), CSR 62–70 % or more, low alkali input, and a balanced mix so that no single material dominates the degradation.</p></div>
+    <div class="card"><h2>Your burden mix</h2><div class="sugs" id="mixSugs"></div></div>
+  </div>
+
+  <div class="card live">
+    <h2>Live knowledge: CO, CCO and COO charging</h2>
+    <p class="note">A live corrective model: change fines, coke CSR, slag volume and hot metal Si (or pick a preset) and watch the burden layers, gas flow, cohesive zone and pressure drop respond for CO, CCO and COO. It recommends the corrective sequence (★), compares all three live, and the Guide tab says when to choose each. Indicative, not plant-calibrated. To run your own COO or CCO matrix, use <a href="charging-modes.html">Other charging modes</a>.</p>
+    <iframe id="liveFrame" src="charging-live.html" title="CO, CCO, COO live corrective model" loading="lazy" style="display:block;width:100%;height:1100px;border:0;margin-top:10px;border-radius:10px;background:transparent"></iframe>
+  </div>
+</div>
+<script>
+/* the live model reports its height, so the whole of it shows without an inner scroll bar */
+addEventListener('message', function (e) { var h = e.data && e.data.bfLiveHeight; var f = document.getElementById('liveFrame');
+  if (f && e.source === f.contentWindow && h > 200 && h < 8000) f.style.height = Math.ceil(h) + 'px'; });
+</script>
+
+<script src="lib/three.min.js"></script>
+<script src="engine.js"></script>
+<script src="seed.js"></script>
+<script src="materials.js"></script>
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script src="pay-config.js"></script>
+<script src="ads.js"></script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>
