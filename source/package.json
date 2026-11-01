@@ -1,0 +1,9 @@
+{
+  "name": "bf-model",
+  "version": "3.5.0",
+  "description": "BF Model: data input, burden batch-wise output chemistry, burden calculator, 3D distribution, furnace 3D view with PCI raceway, and report (offline)",
+  "main": "app/main.js",
+  "author": "Niteen Kumar",
+  "license": "UNLICENSED",
+  "productName": "BF Model"
+}

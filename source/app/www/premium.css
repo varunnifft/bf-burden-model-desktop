@@ -1,0 +1,89 @@
+/* "Horizon Forge" premium theme (BF apps, 2026-10). Loaded after the page's own styles and forge.css.
+   Deep navy + steel graphite shell, molten orange for actions and hot-metal highlights, ocean teal as the second accent.
+   Data colours inside charts (coke blue, ore orange), status colours (warn, good, alert) and every number are left as they are. */
+:root {
+  --pm-navy-950: #040c17; --pm-navy-900: #071426; --pm-navy-800: #0b1f38; --pm-navy-700: #123156; --pm-steel: #5d6e82;
+  --pm-graphite: #18212c; --pm-molten: #ff7a1a; --pm-amber: #ffb547; --pm-teal: #19b3b1; --pm-sea: #1f8fb3;
+  --pm-horizon: linear-gradient(90deg, #19b3b1 0%, #1f8fb3 30%, #ffb547 70%, #ff4d0d 100%);
+  --pm-hot: linear-gradient(180deg, #ff9a3d, #e8590f);
+  --pm-radius: 16px; --pm-ease: cubic-bezier(.2, .7, .2, 1);
+}
+/* tokens only on pages that use the BF Model forge.css token set (<html class="pm-forge">); other apps keep their own */
+:root.pm-forge:not([data-theme="dark"]) {
+  --bg: #edf2f6; --surface: #ffffff; --surface-2: #f4f7fa; --ink: #0f1b2a; --ink-2: #33475b; --muted: #55667a;
+  --line: #d5dfe8; --accent: #c2410c; --accent-soft: #fde9dc;
+}
+@media (prefers-color-scheme: dark) { :root.pm-forge:not([data-theme="light"]) {
+  --bg: #06101c; --surface: #0e1a29; --surface-2: #132235; --ink: #eaf1f7; --ink-2: #b7c5d3; --muted: #8fa1b4;
+  --line: #22344a; --accent: #ff8a3d; --accent-soft: #3b1f0d; --stage: #040a12; color-scheme: dark } }
+:root.pm-forge[data-theme="dark"] {
+  --bg: #06101c; --surface: #0e1a29; --surface-2: #132235; --ink: #eaf1f7; --ink-2: #b7c5d3; --muted: #8fa1b4;
+  --line: #22344a; --accent: #ff8a3d; --accent-soft: #3b1f0d; --stage: #040a12; color-scheme: dark }
+
+html.pm body:not(.pm-home) {
+  background:
+    radial-gradient(1200px 260px at 50% -120px, rgba(31,143,179,.16), transparent 70%),
+    var(--bg);
+}
+html.pm body { animation: pmIn .35s var(--pm-ease) both }
+@keyframes pmIn { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
+
+/* ---- navigation strip: navy bridge with the ocean-to-furnace horizon line */
+html.pm body .bfnav, html.pm body .jump {
+  background: linear-gradient(180deg, var(--pm-navy-800), var(--pm-navy-900) 70%);
+  border: 1px solid #1a3354; border-radius: var(--pm-radius);
+  box-shadow: 0 14px 30px -18px rgba(4,12,23,.85), inset 0 1px 0 rgba(255,255,255,.05) }
+html.pm body .bfnav::after, html.pm body .jump::after { background: var(--pm-horizon); height: 3px }
+html.pm body .bfnav::before { color: var(--pm-amber) }
+html.pm body .bfnav a, html.pm body .jump a {
+  color: #dce7f1; background: rgba(255,255,255,.05); border-color: rgba(160,196,226,.16); border-radius: 10px;
+  transition: background .18s, border-color .18s, transform .18s var(--pm-ease) }
+html.pm body .bfnav a:hover, html.pm body .jump a:hover { background: rgba(25,179,177,.14); border-color: rgba(25,179,177,.55); transform: translateY(-1px) }
+html.pm body .bfnav a.on, html.pm body .jump a.on { background: var(--pm-hot); color: #1a0900; border-color: #ffb066; box-shadow: 0 6px 18px -8px rgba(255,106,26,.9) }
+html.pm body .bfnav a.pm-know, html.pm body .jump a.pm-know { border-color: rgba(25,179,177,.6); color: #bff3f1 }
+html.pm body .bfnav a:focus-visible, html.pm body .jump a:focus-visible { outline: 2px solid var(--pm-teal); outline-offset: 2px }
+
+/* ---- page titles, cards, buttons */
+html.pm .wrap > .top h1, html.pm .wrap > header h1 { color: var(--ink); letter-spacing: .02em }
+html.pm .wrap > .top h1::after, html.pm .wrap > header h1::after {
+  content: ""; display: block; width: 72px; height: 4px; border-radius: 4px; margin-top: 8px; background: var(--pm-horizon) }
+html.pm .card { border-radius: var(--pm-radius); border-color: var(--line);
+  box-shadow: 0 1px 0 rgba(15,27,42,.03), 0 16px 32px -26px rgba(7,20,38,.55); transition: box-shadow .2s, transform .2s var(--pm-ease) }
+html.pm .card h2::before { background: linear-gradient(180deg, var(--pm-teal), var(--pm-molten)) }
+html.pm .btn { border-radius: 10px; transition: filter .15s, transform .15s var(--pm-ease), box-shadow .15s }
+html.pm .btn:hover { transform: translateY(-1px) }
+html.pm .btn:active { transform: none }
+html.pm .btn.primary, html.pm .views button[aria-pressed="true"], html.pm .seg button[aria-pressed="true"] {
+  background: linear-gradient(180deg, #e2621a, #b8410c); border-color: #b8410c; color: #fff; box-shadow: 0 8px 18px -10px rgba(226,98,26,.9) }
+html.pm .form input:focus, html.pm .form select:focus, html.pm td input:focus, html.pm input.in:focus {
+  border-color: var(--pm-sea); outline: 2px solid rgba(31,143,179,.35); outline-offset: 0 }
+html.pm .actions { border-radius: var(--pm-radius); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px) }
+html.pm .tile, html.pm .bout div { border-radius: 10px }
+
+/* ---- chemistry page (bottom tabs layout) */
+html.pm body.forge-chem { --navy: #071426; --bg: #edf2f6; --line: #d5dfe8 }
+html.pm body.forge-chem .top { background: linear-gradient(180deg, var(--pm-navy-800), var(--pm-navy-900)); border-image: var(--pm-horizon) 1 }
+html.pm body.forge-chem .logo { background: #10294a; border-color: #1f3d63 }
+html.pm body.forge-chem .tabs { background: var(--pm-navy-900); box-shadow: 0 -1px 0 #1a3354 }
+html.pm body.forge-chem .tabs::before { background: var(--pm-horizon) }
+html.pm body.forge-chem .sheethead { background: linear-gradient(180deg, var(--pm-navy-800), var(--pm-navy-900)) }
+html.pm body.forge-chem main h2::before { background: linear-gradient(180deg, var(--pm-teal), var(--pm-molten)) }
+html.pm .t608, html.pm .bar608 { background: var(--pm-navy-900) }
+
+/* ---- signature footer on every page */
+.pm-sign { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 14px; margin: 28px auto 18px; padding: 14px 16px 10px;
+  max-width: 1100px; color: var(--muted, #55667a); font: 500 12px/1.4 "IBM Plex Sans", system-ui, sans-serif; letter-spacing: .02em; text-align: center;
+  border-top: 1px solid var(--line, #d5dfe8) }
+.pm-sign img { height: 26px; width: auto; display: block }
+.pm-sign .d { display: none } .pm-sign .l { display: block }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .pm-sign .d { display: block } :root:not([data-theme="light"]) .pm-sign .l { display: none } }
+:root[data-theme="dark"] .pm-sign .d, .pm-dark .pm-sign .d, body.pm-home .pm-sign .d { display: block }
+:root[data-theme="dark"] .pm-sign .l, .pm-dark .pm-sign .l, body.pm-home .pm-sign .l { display: none }
+.pm-sign b { color: var(--ink-2, #33475b); font-weight: 600 }
+body.forge-chem .pm-sign { margin-bottom: 92px }
+
+@media (prefers-reduced-motion: reduce) {
+  html.pm body { animation: none } html.pm .card, html.pm .btn, html.pm body .bfnav a, html.pm body .jump a { transition: none }
+  html.pm .btn:hover, html.pm body .bfnav a:hover { transform: none }
+}
+@media print { .pm-sign { border: 0; margin: 12px 0 0 } html.pm body { animation: none; background: #fff } }

@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 720" preserveAspectRatio="xMidYMid slice">
+<!-- BF Model hero: original artwork (blast furnace complex on a coast at sunrise). Made for the app; no third-party images. -->
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#07152b"/><stop offset=".38" stop-color="#123a5c"/><stop offset=".62" stop-color="#2f6f86"/>
+ <stop offset=".78" stop-color="#e89a5c"/><stop offset=".86" stop-color="#ffc27a"/></linearGradient>
+<radialGradient id="sun" cx="430" cy="520" r="330" gradientUnits="userSpaceOnUse">
+ <stop offset="0" stop-color="#fff3d1"/><stop offset=".08" stop-color="#ffd38a" stop-opacity=".95"/><stop offset=".3" stop-color="#ff9a4a" stop-opacity=".45"/><stop offset="1" stop-color="#ff7a1a" stop-opacity="0"/></radialGradient>
+<linearGradient id="sea" x1="0" y1="0" x2="0" y2="1">
+ <stop offset="0" stop-color="#3c7f92"/><stop offset=".35" stop-color="#18506a"/><stop offset="1" stop-color="#061a2c"/></linearGradient>
+<linearGradient id="glint" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd38a" stop-opacity=".9"/><stop offset="1" stop-color="#ff9a4a" stop-opacity="0"/></linearGradient>
+<linearGradient id="steel" x1="0" y1="0" x2="1" y2="0">
+ <stop offset="0" stop-color="#3a4b5e"/><stop offset=".18" stop-color="#22303f"/><stop offset=".7" stop-color="#141d28"/><stop offset="1" stop-color="#0c131b"/></linearGradient>
+<linearGradient id="steelV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a394a"/><stop offset="1" stop-color="#0c131b"/></linearGradient>
+<radialGradient id="hot" cx="1040" cy="610" r="260" gradientUnits="userSpaceOnUse">
+ <stop offset="0" stop-color="#ffd27a" stop-opacity=".95"/><stop offset=".2" stop-color="#ff7a1a" stop-opacity=".6"/><stop offset="1" stop-color="#ff3d00" stop-opacity="0"/></radialGradient>
+<linearGradient id="land" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#121c27"/><stop offset="1" stop-color="#070d14"/></linearGradient>
+<linearGradient id="steam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#e9eef3" stop-opacity=".55"/><stop offset="1" stop-color="#e9eef3" stop-opacity="0"/></linearGradient>
+<pattern id="truss" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M0 16 16 0M0 0l16 16" stroke="#3b4c5f" stroke-width="1.2"/></pattern>
+<style>
+ .w1{animation:drift 18s linear infinite}.w2{animation:drift 26s linear infinite reverse}
+ .st{animation:rise 9s ease-in-out infinite;transform-origin:1480px 120px}
+ .fl{animation:flick 3.2s ease-in-out infinite}
+ @keyframes drift{from{transform:translateX(0)}to{transform:translateX(-200px)}}
+ @keyframes rise{0%,100%{opacity:.55;transform:translateY(0) scale(1)}50%{opacity:.9;transform:translateY(-14px) scale(1.06)}}
+ @keyframes flick{0%,100%{opacity:.85}50%{opacity:1}}
+ @media (prefers-reduced-motion:reduce){.w1,.w2,.st,.fl{animation:none}}
+</style>
+</defs>
+<rect width="1600" height="720" fill="url(#sky)"/>
+<!-- faint clouds -->
+<g fill="#ffd9b0" opacity=".09"><ellipse cx="260" cy="300" rx="260" ry="14"/><ellipse cx="620" cy="350" rx="300" ry="10"/><ellipse cx="180" cy="390" rx="200" ry="8"/></g>
+<rect width="1600" height="720" fill="url(#sun)"/>
+<circle cx="430" cy="520" r="46" fill="#fff1cc"/>
+<!-- sea -->
+<rect y="520" width="1600" height="200" fill="url(#sea)"/>
+<path d="M400 522h60l70 198H330z" fill="url(#glint)" opacity=".35"/><g stroke="#ffe2a8" stroke-opacity=".55" stroke-width="3" stroke-linecap="round"><path d="M395 534h70M380 552h100M402 574h56M360 600h140M385 632h90M340 668h180"/></g>
+<g class="w1" fill="none" stroke="#bfe6ee" stroke-opacity=".28" stroke-width="2">
+ <path d="M0 560q50-8 100 0t100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0 100 0"/>
+ <path d="M0 600q60-10 120 0t120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0 120 0"/></g>
+<g class="w2" fill="none" stroke="#ffd38a" stroke-opacity=".3" stroke-width="2.5">
+ <path d="M200 640q70-12 140 0t140 0 140 0 140 0 140 0 140 0 140 0 140 0 140 0 140 0 140 0 140 0"/>
+ <path d="M0 690q80-12 160 0t160 0 160 0 160 0 160 0 160 0 160 0 160 0 160 0 160 0 160 0 160 0"/></g>
+<!-- shoreline and plant ground -->
+<path d="M640 600 C700 585 760 580 820 578 L1600 570 L1600 640 L600 640 Z" fill="url(#land)"/>
+<rect x="600" y="636" width="1000" height="6" fill="#ff9a4a" opacity=".25"/>
+<!-- glow behind the cast house -->
+<ellipse cx="1050" cy="600" rx="380" ry="190" fill="url(#hot)" class="fl"/>
+<!-- chimney and steam -->
+<path d="M1472 120h18l6 460h-30z" fill="url(#steel)"/>
+<g fill="#ff4a2a" class="fl"><rect x="1474" y="150" width="14" height="4"/><rect x="1474" y="300" width="16" height="4"/></g>
+<g class="st"><ellipse cx="1486" cy="96" rx="34" ry="22" fill="url(#steam)"/><ellipse cx="1510" cy="64" rx="48" ry="26" fill="url(#steam)" opacity=".7"/><ellipse cx="1545" cy="30" rx="64" ry="28" fill="url(#steam)" opacity=".45"/></g>
+<!-- hot stoves -->
+<g fill="url(#steel)">
+ <path d="M1230 300q0-38 34-38t34 38v280h-68z"/><path d="M1314 290q0-38 34-38t34 38v290h-68z"/><path d="M1398 300q0-38 34-38t34 38v280h-68z"/></g>
+<g stroke="#4b5d72" stroke-width="1.4" opacity=".7"><path d="M1230 360h68M1230 440h68M1230 520h68M1314 360h68M1314 440h68M1314 520h68M1398 360h68M1398 440h68M1398 520h68"/></g>
+<path d="M1150 470h330" stroke="#1a2633" stroke-width="10"/><path d="M1150 470h330" stroke="#3a4b5e" stroke-width="2"/>
+<!-- dust catcher and downcomer -->
+<path d="M840 330h70v120l-35 45-35-45z" fill="url(#steel)"/><path d="M866 495h18v85h-18z" fill="#0f1720"/>
+<path d="M1005 112 C960 90 900 120 875 160 L875 330" fill="none" stroke="#1a2531" stroke-width="22"/>
+<path d="M1005 112 C960 90 900 120 875 160 L875 330" fill="none" stroke="#48607a" stroke-width="3" opacity=".7"/>
+<!-- conveyor to the top -->
+<path d="M560 600 L1000 140" stroke="#0e1620" stroke-width="20"/>
+<path d="M560 600 L1000 140" stroke="url(#truss)" stroke-width="16"/>
+<path d="M560 600 L1000 140" stroke="#5a7088" stroke-width="2" transform="translate(0 -9)"/>
+<g stroke="#152130" stroke-width="5"><path d="M650 506v94M760 391v209M870 276v304"/></g>
+<!-- furnace: hearth, bosh, belly, shaft, throat -->
+<path d="M1015 150h70l40 230-20 70v130h-130v-130l-20-70z" fill="url(#steel)"/>
+<g fill="none" stroke="#5a7088" stroke-width="1.3" opacity=".65"><path d="M1006 200h88M997 250h106M988 300h124M979 350h142M985 420h130M995 470h110M995 520h110"/></g>
+<path d="M1015 150l-40 230 20 70v130" fill="none" stroke="#7b93ad" stroke-width="2.5" opacity=".7"/>
+<!-- platforms and lights -->
+<g stroke="#2a3a4c" stroke-width="4"><path d="M955 250h190M948 330h204M960 420h180M965 500h170"/></g>
+<g fill="#ffc46b" class="fl"><circle cx="962" cy="244" r="2.6"/><circle cx="1140" cy="244" r="2.6"/><circle cx="954" cy="324" r="2.6"/><circle cx="1146" cy="324" r="2.6"/><circle cx="968" cy="414" r="2.6"/><circle cx="1132" cy="414" r="2.6"/><circle cx="1302" cy="268" r="2.2"/><circle cx="1470" cy="200" r="2.2"/></g>
+<!-- bustle main and tuyeres -->
+<path d="M960 452 h180" stroke="#1d2a38" stroke-width="12" stroke-linecap="round"/><g fill="#ff9a3d" class="fl"><circle cx="985" cy="468" r="3"/><circle cx="1020" cy="470" r="3"/><circle cx="1055" cy="471" r="3"/><circle cx="1090" cy="470" r="3"/><circle cx="1120" cy="468" r="3"/></g>
+<!-- top: charging equipment and uptakes -->
+<path d="M1010 104h80v46h-80z" fill="url(#steelV)"/><path d="M1022 78h56v26h-56z" fill="#1b2836"/>
+<path d="M1030 78 C1030 40 1048 30 1050 18 M1070 78 C1070 40 1052 30 1050 18" stroke="#1a2531" stroke-width="12" fill="none"/>
+<path d="M1050 18v-10" stroke="#1a2531" stroke-width="8"/>
+<!-- cast house with tapping glow -->
+<path d="M900 540h300l-20-30H920z" fill="#121b25"/><rect x="900" y="540" width="300" height="60" fill="#0f1720"/>
+<g class="fl"><rect x="960" y="560" width="180" height="22" rx="4" fill="#ff7a1a" opacity=".85"/><rect x="980" y="566" width="140" height="10" rx="4" fill="#ffd27a"/></g>
+<!-- torpedo ladle -->
+<path d="M720 600q0-18 30-18h80q30 0 30 18v4H720z" fill="#1b2633"/><circle cx="745" cy="608" r="6" fill="#0b1118"/><circle cx="835" cy="608" r="6" fill="#0b1118"/>
+<!-- foreground reflections of the plant -->
+<g opacity=".18" fill="#ffb066"><rect x="980" y="646" width="120" height="4"/><rect x="1000" y="660" width="80" height="3"/><rect x="1240" y="650" width="60" height="3"/></g>
+</svg>

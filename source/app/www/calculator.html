@@ -1,0 +1,623 @@
+<!doctype html>
+<html lang="en" class="pm-forge">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="theme-color" content="#15171a">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>[hidden]{display:none!important} body{margin:0}.ringbtns { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px }
+.ringbtns .btn[disabled] { opacity: .5 }
+</style>
+</head>
+<body>
+<title>BF Burden Calculator</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="fonts.css">
+<style>
+/* Layout: engineering calculation sheet. Inputs in numbered sections on the left, results on the right; stacks on narrow screens. */
+:root {
+  --bg: #eceff2; --surface: #ffffff; --surface-2: #f4f6f8; --ink: #16202a; --ink-2: #47525f; --muted: #6f7a87;
+  --line: #d3d9e0; --accent: #0e7c70; --accent-ink: #ffffff; --accent-soft: #d7efeb;
+  --coke: #2f62a8; --ore: #c4622d; --base: #8a7f76; --warn: #a35c00; --good: #2a7a3b;
+  --f-display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0d1115; --surface: #141a20; --surface-2: #1a2129; --ink: #e5eaef; --ink-2: #a8b3bf; --muted: #7c8895;
+  --line: #29323c; --accent: #3db3a4; --accent-ink: #06231f; --accent-soft: #123631;
+  --coke: #5b8fd6; --ore: #d8703a; --base: #6c625b; --warn: #e0a24a; --good: #6cc27d; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0d1115; --surface: #141a20; --surface-2: #1a2129; --ink: #e5eaef; --ink-2: #a8b3bf; --muted: #7c8895;
+  --line: #29323c; --accent: #3db3a4; --accent-ink: #06231f; --accent-soft: #123631;
+  --coke: #5b8fd6; --ore: #d8703a; --base: #6c625b; --warn: #e0a24a; --good: #6cc27d; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font-family: var(--f-body); font-size: 14px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 14px 32px }
+.wrap { max-width: 1440px; margin: 0 auto; display: grid; gap: 14px }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; margin: 0; text-wrap: balance }
+h1 { font-size: 30px; line-height: 1.05 }
+h2 { font-size: 18px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-2) }
+h2 .n { color: var(--accent); margin-right: 6px }
+.top p { margin: 4px 0 0; color: var(--ink-2); max-width: 80ch }
+.grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 14px; align-items: start }
+@media (max-width: 1100px) { .grid { grid-template-columns: minmax(0, 1fr) } }
+.col { display: grid; gap: 12px; min-width: 0 }
+.note { margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--ink-2) }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; min-width: 0; align-content: start }
+.card header { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap }
+.hint { font-size: 12px; color: var(--muted); margin: 0 }
+.form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 10px }
+@media (max-width: 520px) { .form { grid-template-columns: 1fr 1fr } }
+.form label { display: grid; gap: 3px; font-size: 12px; color: var(--ink-2); min-width: 0 }
+.form input, .form select, td input { font: 13px var(--f-mono); padding: 6px 7px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface-2); color: var(--ink); width: 100%; min-width: 0 }
+td input { width: 64px; padding: 3px 5px; text-align: right; font-size: 12px }
+.form small { grid-column: 1 / -1; color: var(--muted); font-size: 11px }
+.tablewrap { overflow-x: auto }
+table { border-collapse: collapse; width: 100%; font-size: 12px }
+th { text-align: right; font-weight: 500; color: var(--muted); padding: 4px 5px; border-bottom: 1px solid var(--line); white-space: nowrap }
+th:first-child, td:first-child { text-align: left }
+td { padding: 3px 5px; text-align: right; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap }
+td.t { font-family: var(--f-body) }
+tfoot td { font-weight: 600; border-bottom: 0 }
+.btn { font: 500 13px/1 var(--f-body); border: 1px solid var(--line); background: var(--surface); color: var(--ink); padding: 9px 14px; border-radius: 5px; cursor: pointer }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-size: 15px; padding: 11px 22px }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; position: sticky; bottom: 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; z-index: 2 }
+.actions .status { font-size: 12px; color: var(--muted) }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px }
+.tile { background: var(--surface-2); border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px }
+.tile span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em }
+.tile b { font: 500 17px var(--f-mono) }
+.alerts { display: grid; gap: 6px }
+.alert { border: 1px solid var(--warn); color: var(--warn); border-radius: 6px; padding: 7px 10px; font-size: 13px }
+.ok { border: 1px solid var(--good); color: var(--good); border-radius: 6px; padding: 7px 10px; font-size: 13px }
+.chart { position: relative }
+.chart svg { display: block; width: 100%; height: 240px; overflow: visible }
+.chart text { font-family: var(--f-body); font-size: 11px; fill: var(--muted) }
+.legend { display: flex; gap: 12px; font-size: 12px; color: var(--ink-2); flex-wrap: wrap }
+.legend span { display: inline-flex; align-items: center; gap: 5px }
+.dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 6px 8px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: grid; gap: 2px; min-width: 150px; z-index: 3 }
+.tip[hidden] { display: none }
+.tip .row { display: flex; justify-content: space-between; gap: 10px }
+tr.wall td { color: var(--warn) }
+details summary { cursor: pointer; font-size: 13px; color: var(--ink-2) }
+.empty { color: var(--muted); font-size: 13px; padding: 20px 0; text-align: center }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important } }
+details.help { margin-top: 10px; font-size: 12.5px; color: var(--ink-2) }
+details.help summary { cursor: pointer; color: var(--accent); font-weight: 600 }
+details.help ul { padding-left: 18px; margin: 8px 0 } details.help li { margin: 6px 0 } details.help p { margin: 6px 0 }
+</style>
+<link rel="stylesheet" href="forge.css">
+<link rel="stylesheet" href="premium.css">
+
+<div class="wrap">
+  <div class="top">
+    <h1>Burden Distribution Calculator</h1>
+    <p>Type every input by hand, then press Calculate. Results show where each chute ring lands, the coke and ore layer thickness across the throat, O/C by radius and the burden profile. Same model as the 3D distribution. Example values are loaded at first start: replace them with your own furnace, burden and charging matrix. Inputs are saved on this device only.</p>
+  </div>
+
+  <div class="card" id="importCard" style="margin-bottom:14px"></div>
+  <div class="grid">
+    <div class="col">
+      <div class="card">
+        <header><h2><span class="n">1</span>Furnace and chute</h2></header>
+        <div class="form">
+          <label>Throat diameter (m)<input id="i_throatD" type="number" step="0.01" min="2" max="10"></label>
+          <label>Wall landing limit (m from axis)<input id="i_Reff" type="number" step="0.01" min="1" max="5"></label>
+          <label>Throat height (m)<input id="i_throatH" type="number" step="0.1" min="0.5" max="4"></label>
+          <label>Shaft height (m)<input id="i_shaftH" type="number" step="0.1" min="1" max="30"></label>
+          <label>Belly diameter (m)<input id="i_bellyD" type="number" step="0.01" min="2" max="15"></label>
+          <label>Belly height (m)<input id="i_bellyH" type="number" step="0.1" min="0" max="5"></label>
+          <label>Bosh height (m)<input id="i_boshH" type="number" step="0.1" min="0" max="8"></label>
+          <label>Hearth diameter (m)<input id="i_hearthD" type="number" step="0.01" min="2" max="15"></label>
+          <label>Chute length (m)<input id="i_L" type="number" step="0.01" min="0.5" max="5"></label>
+          <label>Pivot above zero stockline (m)<input id="i_Hp" type="number" step="0.05" min="0" max="6"></label>
+          <label>Pivot offset from axis (m)<input id="i_e" type="number" step="0.01" min="0" max="1"></label>
+          <label>Chute speed (r/min)<input id="i_rpm" type="number" step="0.1" min="0" max="20"></label>
+          <label>Gate to chute drop (m)<input id="i_hG" type="number" step="0.1" min="0" max="6"></label>
+          <label>Impact speed kept (0–1)<input id="i_kImp" type="number" step="0.05" min="0" max="1"></label>
+          <label>Stockline before coke (m)<input id="i_stock" type="number" step="0.05" min="0" max="5"></label>
+          <label>Stream spread, coke (± m)<input id="i_wC" type="number" step="0.01" min="0.02" max="1.5"></label>
+          <label>Stream spread, ore (± m)<input id="i_wO" type="number" step="0.01" min="0.02" max="1.5"></label>
+          <label>Burden tank volume (m³, optional)<input id="i_tankV" type="number" step="0.5" min="0" max="200"></label>
+          <label>Max ore batch (kg, optional)<input id="i_oreMax" type="number" step="100" min="0" max="200000"></label>
+          <small>Gate drop and impact speed are used in the extended model only. Wall landing limit: a stream reaching further is held at this radius. Leave tank volume and max ore batch empty to skip those checks.</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <header><h2><span class="n">2</span>Burden per charge</h2><span class="hint">per charge, as on your burden sheet</span></header>
+        <div class="form">
+          <label>Coke base (kg, dry)<input id="i_cokeBase" type="number" min="0" step="50"></label>
+          <label>Yard / second coke (%)<input id="i_yardPct" type="number" min="0" max="100" step="1"></label>
+          <label>Ore / coke<input id="i_oc" type="number" min="0" max="10" step="0.01"></label>
+          <label>Sinter (%)<input id="i_sinterPct" type="number" min="0" max="100" step="1"></label>
+          <label>Pellet (%)<input id="i_pelletPct" type="number" min="0" max="100" step="1"></label>
+          <label>Lump CLO (%)<input id="i_cloPct" type="number" min="0" max="100" step="1"></label>
+          <label>Nut coke (kg, dry)<input id="i_nut" type="number" min="0" step="10"></label>
+          <label>Limestone (kg)<input id="i_lime" type="number" min="0" step="10"></label>
+          <label>Dolomite (kg)<input id="i_dolo" type="number" min="0" step="10"></label>
+          <label>Paraxonite (kg)<input id="i_pyrox" type="number" min="0" step="10"></label>
+          <label>Quartz (kg)<input id="i_quartz" type="number" min="0" step="10"></label>
+          <label>Mn ore (kg)<input id="i_mn" type="number" min="0" step="10"></label>
+          <small>Lump ore % = 100 − sinter − pellet − Lump CLO. Ore-side weights = % × ore/coke × (coke base + nut coke).</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <header><h2><span class="n">3</span>Materials</h2><span class="hint">moisture, bulk density, chute friction, repose</span></header>
+        <div class="tablewrap">
+          <table id="matTable">
+            <thead><tr><th>Material</th><th>Moisture %</th><th>MPS mm</th><th>Bulk density t/m³</th><th>Friction μ</th><th>Repose °</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <header><h2><span class="n">4</span>Charging matrix</h2><span class="hint">angle and revolutions per ring, separate for coke and metallics</span></header>
+        <div class="tablewrap">
+          <table id="mxTable">
+            <thead><tr><th>Ring</th><th>Coke angle °</th><th>Coke rev</th><th>Metallics angle °</th><th>Metallics rev</th></tr></thead>
+            <tbody></tbody>
+            <tfoot><tr><td>Total</td><td></td><td id="sumC"></td><td></td><td id="sumO"></td></tr></tfoot>
+          </table>
+        </div>
+        <div class="ringbtns"><button class="btn" type="button" id="mxAdd">+ Ring</button><button class="btn" type="button" id="mxDel">− Last ring</button><span class="hint" id="mxN"></span></div>
+        <div class="form">
+          <label>Tilt order<select id="i_order"><option value="out">Outer → inner (typical)</option><option value="in">Inner → outer</option></select></label>
+          <label>Model<select id="i_mode"><option value="extended">Extended (rotating chute)</option><option value="workbook">First-order (flat stockline)</option></select></label>
+          <label>Charges before the reported one<input id="i_pre" type="number" min="0" max="12" step="1"></label>
+          <small>Earlier identical charges build a realistic surface first (0 = start from a flat stockline).</small>
+        </div>
+      </div>
+
+      <div class="card">
+        <header><h2><span class="n">5</span>Furnace operation</h2><span class="hint">gas flow above the burden</span></header>
+        <div class="form">
+          <label>Blast volume (Nm³/min)<input id="i_BV" type="number" step="10" min="0" max="10000"></label>
+          <label>Oxygen flow (Nm³/h)<input id="i_O2" type="number" step="100" min="0" max="100000"></label>
+          <label>Top pressure (kg/cm² g)<input id="i_TP" type="number" step="0.01" min="0" max="5"></label>
+          <label>Blast pressure (kg/cm² g)<input id="i_BP" type="number" step="0.01" min="0" max="6"></label>
+          <label>Top gas temperature (°C)<input id="i_Ttop" type="number" step="5" min="0" max="600"></label>
+          <label>Gas drag on the stream<select id="i_gas"><option value="on">On (extended model)</option><option value="off">Off</option></select></label>
+          <small>The gas slows the falling stream and pushes small particles back toward the centre. Extended model only. Defaults are estimates: enter your current operating values.</small>
+        </div>
+        <details class="help"><summary>Which of these change the trajectory?</summary>
+          <ul>
+            <li><b>Mean particle size (MPS) of each material: take.</b> It sets the drag on each particle in the gas. Small sizes (nut coke, small pellets, fines) are slowed most and land nearer the centre; 40–60 mm coke hardly moves.</li>
+            <li><b>Blast volume: take.</b> With oxygen it sets the gas volume: bosh gas ≈ 1.21 × blast + 2 × oxygen. More gas means a faster upward flow above the burden, which pushes against the falling stream.</li>
+            <li><b>Oxygen flow: take.</b> Each Nm³ of oxygen makes about 2 Nm³ of CO, so enrichment raises the gas volume at the same blast.</li>
+            <li><b>Top pressure: take.</b> It sets the gas density and the actual gas velocity. Higher top pressure makes the gas denser (more drag on the moving stream) but slower (less upward push); the model weighs both.</li>
+            <li><b>Top gas temperature: take (added).</b> Needed to turn Nm³ into the actual gas volume at the top.</li>
+            <li><b>Blast pressure: skip for the trajectory.</b> It acts below the burden; above the stockline only top pressure matters. It is kept to show BP − TP, the pressure drop across the burden, as a permeability check.</li>
+          </ul>
+          <p><b>How big is it?</b> At usual top-gas velocity (about 1–2 m/s at top pressure) the landing point of 40–60 mm coke and 10–25 mm ore moves by only millimetres to about 2 cm, so the matrix still decides the distribution. The shift grows quickly for fines and sizes under about 10 mm, and at low top pressure. The ring table shows the shift for every ring.</p>
+          <p>Drag is applied to the free fall from the chute tip to the burden, using a sphere of the material's MPS with particle density = bulk density ÷ 0.55. The ore side uses its mass-weighted size and density. Not included: gas from coal injection or steam (add its volume to blast volume if large), gas channelling, and any effect of MPS on the angle of repose (enter repose in the material table).</p>
+        </details>
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" id="calc">Calculate</button>
+        <button class="btn" id="toSim" title="Calculate, then open the 3D distribution with the same inputs">3D distribution ›</button>
+        <button class="btn" id="defaults">Load example values</button>
+        <button class="btn" id="clear">Clear all inputs</button>
+        <span class="status" id="status"></span>
+      </div>
+    </div>
+
+    <div class="col" id="results">
+      <div class="card">
+        <header><h2>Results</h2><span class="hint" id="resFor"></span></header>
+        <div class="tiles" id="tiles"></div>
+        <div class="alerts" id="alerts"></div>
+      </div>
+      <div class="card">
+        <header><h2>Ring by ring</h2><span class="hint">landing radius from the furnace axis</span></header>
+        <div class="tablewrap"><table id="ringTable"></table></div>
+      </div>
+      <div class="card">
+        <header><h2>Burden profile at the throat</h2><span class="hint">section from axis to wall, last charge on top</span></header>
+        <div class="legend"><span><i class="dot" style="background:var(--coke)"></i>Coke</span><span><i class="dot" style="background:var(--ore)"></i>Ore side</span><span><i class="dot" style="background:var(--base)"></i>Earlier charges</span></div>
+        <div class="chart" id="chProfile"></div>
+      </div>
+      <div class="card">
+        <header><h2>Layer thickness by radius</h2></header>
+        <div class="legend"><span><i class="dot" style="background:var(--coke)"></i>Coke</span><span><i class="dot" style="background:var(--ore)"></i>Ore side</span></div>
+        <div class="chart" id="chThick"></div>
+      </div>
+      <div class="card">
+        <header><h2>Ore / coke by radius</h2><span class="hint">metallics ÷ dry coke, by mass</span></header>
+        <div class="chart" id="chOC"></div>
+        <div class="tablewrap"><table id="zoneTable"></table></div>
+        <details><summary>Radial table, 25 rings of the throat</summary><div class="tablewrap"><table id="radTable"></table></div></details>
+      </div>
+      <div class="card">
+        <header><h2>Layer thickness down the furnace</h2><span class="hint">throat to tuyeres, plug flow</span></header>
+        <div class="legend"><span><i class="dot" style="background:var(--coke)"></i>Coke</span><span><i class="dot" style="background:var(--ore)"></i>Metallics (ore side)</span></div>
+        <div class="chart" id="chDown"></div>
+        <div class="tablewrap"><table id="levelTable"></table></div>
+        <div class="tablewrap"><table id="levelZones"></table></div>
+        <p class="note">Depth is below zero stockline. Each layer keeps its volume as it descends, so its thickness scales with throat area ÷ local area: thinnest in the belly and thicker again through the bosh. Zones keep their share of the radius. Below the shaft the ore softens and melts in the cohesive zone and only coke reaches the tuyeres, so belly and bosh metallics figures are solid-equivalent thickness before softening.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="engine.js"></script>
+<script src="seed.js"></script>
+<script src="chem-link.js"></script>
+<script src="link.js"></script>
+<script>
+/* ---------- Inputs ---------- */
+const $ = s => document.querySelector(s);
+const G = 9.81;
+const MATS = [
+  ['mainCoke', 'Main coke', 'coke'], ['yardCoke', 'Yard / second coke', 'coke'], ['sinter', 'Sinter', 'sinter'], ['pellet', 'Pellet', 'pellet'],
+  ['ore', 'Lump ore', 'ore'], ['clo', 'Lump CLO', 'clo'], ['lime', 'Limestone', 'lime'], ['dolo', 'Dolomite', 'dolo'],
+  ['pyrox', 'Paraxonite', 'pyrox'], ['quartz', 'Quartz', 'quartz'], ['mn', 'Mn ore', 'mn'], ['nut', 'Nut coke', 'nut']];
+// Physical properties are per material class (both cokes share 'coke'); moisture is per row
+const PROPS = { coke: [0.5, 0.45, 35], sinter: [1.75, 0.36, 33], pellet: [2.2, 0.30, 27], ore: [2.3, 0.40, 36], clo: [2.3, 0.40, 36], lime: [1.5, 0.38, 38],
+  dolo: [1.6, 0.38, 38], pyrox: [1.6, 0.38, 38], quartz: [1.5, 0.38, 37], mn: [2.0, 0.40, 36], nut: [0.5, 0.42, 34] };
+const MOIST = { mainCoke: 5, yardCoke: 5, sinter: 0.5, pellet: 2, ore: 3, clo: 3, lime: 1, dolo: 1, pyrox: 2, quartz: 1, mn: 2, nut: 8 };
+const FIELDS = { throatD: 6.0, Reff: 2.95, throatH: 1.8, shaftH: 13.0, bellyD: 9.0, bellyH: 1.8, boshH: 3.2, hearthD: 7.6, L: 2.8, Hp: 2.8, e: 0, rpm: 8.0, hG: 2.5, kImp: 0.6, stock: 1.5, wC: 0.30, wO: 0.25, tankV: null, oreMax: null,
+  cokeBase: 7000, yardPct: 0, oc: 4.2, sinterPct: 65, pelletPct: 20, cloPct: 10, nut: 500, lime: 0, dolo: 200, pyrox: 0, quartz: 0, mn: 0, pre: 5 };
+const MATRIX = [[12, 3, 12, 0], [20, 1, 20, 1], [25, 1, 25, 2], [28, 1, 28, 2], [31, 1, 31, 2], [33, 1, 33, 2], [35, 2, 35, 1], [37, 2, 37, 0], [39, 0, 39, 0]];   // example only: coke angle, coke rev, metallics angle, metallics rev
+Object.assign(FIELDS, { BV: 2000, O2: 5000, TP: 1.2, BP: 2.6, Ttop: 150 });   // furnace operation: example values
+const MPS = { mainCoke: 50, yardCoke: 45, sinter: 18, pellet: 12, ore: 22, clo: 15, lime: 30, dolo: 30, pyrox: 25, quartz: 25, mn: 25, nut: 20 };   // mean particle size, mm (example)
+const GASF = ['BV', 'O2', 'TP', 'BP', 'Ttop'];
+const DEF = { f: FIELDS, moist: MOIST, mps: MPS, props: PROPS, mx: MATRIX, order: 'out', mode: 'extended', gas: 'on' };
+const STORE = 'bfbm-calculator-v1';
+const OPTIONAL = ['tankV', 'oreMax'];
+let IN = JSON.parse(JSON.stringify(DEF));
+try { const d = JSON.parse(localStorage.getItem(STORE) || 'null'); if (d && d.f) IN = { ...IN, ...d, f: { ...IN.f, ...d.f }, mps: { ...IN.mps, ...(d.mps || {}) } }; } catch (e) {}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(IN)); } catch (e) {} };
+
+function buildInputs() {
+  if (window.BF_SOURCE) BF_SOURCE.beforeBuild(IN);   // an embedding app may fill some inputs from its own data
+  Object.keys(FIELDS).forEach(k => { const el = $('#i_' + k); el.value = IN.f[k] ?? ''; });
+  $('#i_order').value = IN.order; $('#i_mode').value = IN.mode; $('#i_gas').value = IN.gas;
+  const seen = {};
+  $('#matTable tbody').innerHTML = MATS.map(([k, name, cls]) => {
+    const first = !seen[cls]; seen[cls] = 1; const p = IN.props[cls];
+    const cell = (id, v, st) => `<td><input id="${id}" type="number" step="${st}" min="0" value="${v ?? ''}" aria-label="${name} ${id.split('_')[0]}"></td>`;
+    return `<tr><td class="t">${name}</td>${cell('moist_' + k, IN.moist[k], 0.01)}${cell('mps_' + k, IN.mps[k], 1)}` +
+      (first ? cell('rho_' + cls, p[0], 0.05) + cell('mu_' + cls, p[1], 0.01) + cell('rep_' + cls, p[2], 1) : '<td colspan="3" class="t hint">same as main coke</td>') + '</tr>';
+  }).join('');
+  $('#mxTable tbody').innerHTML = IN.mx.map((r, i) => `<tr><td>${i + 1}</td>` + r.map((v, j) => `<td><input id="mx_${i}_${j}" type="number" step="${j % 2 ? 1 : 0.5}" min="0" max="${j % 2 ? 20 : 50}" value="${v ?? ''}" aria-label="Ring ${i + 1} ${['coke angle', 'coke rev', 'metallics angle', 'metallics rev'][j]}"></td>`).join('') + '</tr>').join('');
+  sums();
+  if (window.BF_SOURCE) BF_SOURCE.afterBuild(IN);
+}
+function ringBtns() { const n = IN.mx.length; $('#mxN').textContent = n + ' of 18 rings'; $('#mxAdd').disabled = n >= 18; $('#mxDel').disabled = n <= 1; }
+function sums() { ringBtns(); $('#sumC').textContent = IN.mx.reduce((s, r) => s + (+r[1] || 0), 0); $('#sumO').textContent = IN.mx.reduce((s, r) => s + (+r[3] || 0), 0); }
+document.addEventListener('change', e => {
+  const id = e.target.id || ''; const v = e.target.value === '' ? null : Number(e.target.value);
+  if (id.startsWith('i_')) { const k = id.slice(2); if (k === 'order' || k === 'mode' || k === 'gas') IN[k] = e.target.value; else IN.f[k] = v; }
+  else if (id.startsWith('moist_')) IN.moist[id.slice(6)] = v;
+  else if (id.startsWith('mps_')) IN.mps[id.slice(4)] = v;
+  else if (/^(rho|mu|rep)_/.test(id)) { const [p, cls] = id.split('_'); IN.props[cls][{ rho: 0, mu: 1, rep: 2 }[p]] = v; }
+  else if (id.startsWith('mx_')) { const [, i, j] = id.split('_'); IN.mx[+i][+j] = v; sums(); }
+  else return;
+  save(); $('#status').textContent = 'Inputs changed · press Calculate';
+});
+$('#mxAdd').addEventListener('click', () => { if (IN.mx.length >= 18) return; const l = IN.mx[IN.mx.length - 1] || [30, 0, 30, 0]; IN.mx.push([Math.min(50, (+l[0] || 30) + 1), 0, Math.min(50, (+l[2] || 30) + 1), 0]); save(); buildInputs(); });
+$('#mxDel').addEventListener('click', () => { if (IN.mx.length <= 1) return; IN.mx.pop(); save(); buildInputs(); calculate(); });
+$('#defaults').addEventListener('click', () => { IN = JSON.parse(JSON.stringify(DEF)); save(); buildInputs(); calculate(); if (!missing().length) BFLink.calculated(IN); });
+$('#clear').addEventListener('click', () => {
+  Object.keys(IN.f).forEach(k => IN.f[k] = null); Object.keys(IN.moist).forEach(k => IN.moist[k] = null); Object.keys(IN.mps).forEach(k => IN.mps[k] = null);
+  Object.keys(IN.props).forEach(k => IN.props[k] = [null, null, null]); IN.mx = IN.mx.map(() => [null, null, null, null]);
+  save(); buildInputs(); $('#status').textContent = 'All inputs cleared · fill every box, then Calculate';
+});
+
+/* ---------- Model (same as the 3D distribution) ---------- */
+const N = 25;
+let R, EDGE, MID, AREA, ATH;
+function setGeom(Rt) { R = Rt; EDGE = Array.from({ length: N + 1 }, (_, i) => i * R / N); MID = EDGE.slice(0, N).map((e, i) => (e + EDGE[i + 1]) / 2);
+  AREA = MID.map((_, i) => Math.PI * (EDGE[i + 1] ** 2 - EDGE[i] ** 2)); ATH = Math.PI * R * R; }
+const meanDepth = d => d.reduce((s, v, i) => s + v * AREA[i], 0) / ATH;
+function surfDepthAt(d, r) { const x = Math.min(Math.max(r, 0), R) / (R / N) - 0.5; if (x <= 0) return d[0]; if (x >= N - 1) return d[N - 1]; const i = Math.floor(x); return d[i] + (d[i + 1] - d[i]) * (x - i); }
+/* Gas above the burden. Bosh gas ≈ 1.21 × blast + 2 × oxygen (Nm³/min); actual volume at top pressure and temperature. */
+function gasCalc(BV, O2, TP, Ttop, A) {
+  const Pa = 1.033 + TP, T = Ttop + 273.15, Qn = 1.21 * BV + 2 * O2 / 60;
+  const Q = Qn / 60 * T / 273.15 * 1.033 / Pa;
+  return { Qn, Q, u: Q / A, rho: 1.33 * Pa / 1.033 * 273.15 / T, mu: 2.2e-5 };
+}
+/* Drag on a sphere (Schiller–Naumann): returns k(v_rel) with acceleration = −k · v_rel */
+function dragFn(p, g) {
+  return vr => { const Re = Math.max(g.rho * vr * p.d / g.mu, 1e-6), Cd = Re < 1000 ? 24 / Re * (1 + 0.15 * Re ** 0.687) : 0.44;
+    return 0.75 * Cd * g.rho * vr / (p.rho * p.d); };
+}
+/* Free fall from the chute tip (radial x, tangential y, height z) until the stream meets the surface or the wall */
+function fly(x0, vx, vt, vy, z0, surf, Rw, D) {
+  const dt = 0.002, gap = (x, y, z) => { const r = Math.hypot(x, y); return Math.min(z + surfDepthAt(surf, r), Rw - r); };   // > 0 while in flight
+  let t = 0, x = x0, y = 0, z = z0, ux = vx, uy = vt, uz = -vy, g0 = gap(x, y, z), k = 0; const path = [[0, x, y, z]];
+  while (g0 > 0 && t < 4) {
+    let ax = 0, ay = 0, az = -G;
+    if (D) { const rz = uz - D.u, vr = Math.hypot(ux, uy, rz), kk = D.k(vr); ax = -kk * ux; ay = -kk * uy; az -= kk * rz; }
+    const x1 = x + ux * dt + 0.5 * ax * dt * dt, y1 = y + uy * dt + 0.5 * ay * dt * dt, z1 = z + uz * dt + 0.5 * az * dt * dt, g1 = gap(x1, y1, z1);
+    if (g1 <= 0) { const f = g0 / (g0 - g1); x += (x1 - x) * f; y += (y1 - y) * f; z += (z1 - z) * f; t += dt * f; break; }   // land between steps
+    x = x1; y = y1; z = z1; ux += ax * dt; uy += ay * dt; uz += az * dt; t += dt; g0 = g1;
+    if (++k % 10 === 0) path.push([t, x, y, z]);
+  }
+  path.push([t, x, y, z]);
+  return { t, r: Math.hypot(x, y), path };
+}
+function landing(alphaDeg, mu, P, level, surf, part) {
+  const a = alphaDeg * Math.PI / 180, sa = Math.sin(a), ca = Math.cos(a), acc = ca - mu * sa;
+  const x0 = P.e + P.L * sa, tipDepth = P.L * ca;
+  if (acc <= 0 && P.mode !== 'extended') return { flag: 'No slide', v0: 0, tFall: 0, raw: x0, r: Math.min(x0, P.Reff) };
+  let v0, vt = 0;
+  if (P.mode === 'extended') {
+    const w = 2 * Math.PI * P.rpm / 60, n = 400, ds = P.L / n; let v = Math.max(P.kImp * Math.sqrt(2 * G * P.hG) * ca, 1e-3);
+    for (let k = 0; k < n; k++) { const r = P.e + (k + 0.5) * ds * sa; const normal = Math.hypot(G * sa - w * w * r * ca, 2 * w * v * sa);
+      const A = G * ca + w * w * r * sa - mu * normal; v = Math.sqrt(Math.max(v * v + 2 * A * ds, 1e-6)); }
+    v0 = v; vt = w * x0;
+  } else v0 = Math.sqrt(2 * G * P.L * acc);
+  const vx = v0 * sa, vy = v0 * ca; let tFall, raw;
+  if (P.mode === 'extended' && surf) {
+    const fl = fly(x0, vx, vt, vy, P.Hp - tipDepth, surf, R, part && P.gas ? { k: dragFn(part, P.gas), u: P.gas.u } : null);
+    tFall = fl.t; raw = fl.r;
+  } else { const fall = P.Hp + level - tipDepth; tFall = fall > 0 ? (-vy + Math.sqrt(vy * vy + 2 * G * fall)) / G : 0; raw = x0 + vx * tFall; }
+  return { flag: raw > P.Reff ? 'Wall' : 'OK', v0, vt, tFall, raw, r: Math.min(raw, P.Reff) };
+}
+function spread(Y, w) { const F = new Float64Array(N + 1); F[N] = 1;
+  for (let i = 1; i < N; i++) { const u = Math.max(-1, Math.min(1, (EDGE[i] - Y) / w)); F[i] = 0.5 + u - u * Math.abs(u) / 2; }
+  return Array.from({ length: N }, (_, i) => F[i + 1] - F[i]); }
+function relax(d, rep, floor) { const lim = Math.tan(rep * Math.PI / 180) * R / N;
+  for (let it = 0; it < 60; it++) { let moved = false;
+    for (let i = 0; i < N - 1; i++) { const diff = d[i + 1] - d[i]; if (Math.abs(diff) <= lim * 1.001) continue;
+      const hi = diff > 0 ? i : i + 1, lo = diff > 0 ? i + 1 : i; let dV = 0.5 * (Math.abs(diff) - lim) / (1 / AREA[hi] + 1 / AREA[lo]);
+      dV = Math.min(dV, Math.max(0, (floor[hi] - d[hi]) * AREA[hi])); if (dV <= 1e-9) continue;
+      d[hi] += dV / AREA[hi]; d[lo] -= dV / AREA[lo]; moved = true; }
+    if (!moved) break; } }
+
+/* Burden from the input sheet: dry kg, wet set point, volume */
+function burden(f, moist, props, mps) {
+  const tot = f.cokeBase + f.nut, mainC = f.cokeBase * (100 - f.yardPct) / 100, yard = f.cokeBase - mainC;
+  const dry = { mainCoke: mainC, yardCoke: yard, pellet: f.pelletPct * f.oc * tot / 100, ore: Math.max(0, 100 - f.sinterPct - f.pelletPct - f.cloPct) * f.oc * tot / 100,
+    sinter: f.oc * f.sinterPct * tot / 100, clo: f.oc * f.cloPct * tot / 100, lime: f.lime, dolo: f.dolo, pyrox: f.pyrox, quartz: f.quartz, mn: f.mn, nut: f.nut };
+  const wetAdj = { mainCoke: 1, yardCoke: 1, pellet: 1, ore: 1, sinter: 1, nut: 1 };    // weighed wet: set point = dry / (1 − moisture)
+  const rows = MATS.map(([k, name, cls]) => { const d = dry[k], w = wetAdj[k] ? d / (1 - moist[k] / 100) : d;
+    const vol = (cls === 'coke' ? w : d) / 1000 / props[cls][0]; return { k, name, cls, dry: d, wet: w, vol }; });
+  const coke = rows.filter(r => r.cls === 'coke'), oreS = rows.filter(r => r.cls !== 'coke');
+  const sum = (a, p) => a.reduce((s, r) => s + r[p], 0);
+  const oreDryV = sum(oreS, 'dry');
+  const muOre = oreDryV ? oreS.reduce((s, r) => s + r.dry * props[r.cls][1], 0) / oreDryV : 0.35;
+  const repOre = oreDryV ? oreS.reduce((s, r) => s + r.dry * props[r.cls][2], 0) / oreDryV : 32;
+  const met = dry.sinter + dry.pellet + dry.ore + dry.clo;
+  // falling particle for the drag model: mass-weighted size and particle density (bulk ÷ 0.55)
+  const part = a => { const m = sum(a, 'dry') || 1; return { d: a.reduce((s, r) => s + r.dry * mps[r.k], 0) / m / 1000, rho: a.reduce((s, r) => s + r.dry * props[r.cls][0], 0) / m / 0.55 * 1000 }; };
+  const cokeV = sum(coke, 'vol'), oreV = sum(oreS, 'vol');
+  return { rows, pCoke: part(coke), pOre: part(oreS), cokeDry: f.cokeBase, cokeWet: sum(coke, 'wet'), oreDry: oreDryV, oreWet: sum(oreS, 'wet'), cokeV, oreV, muOre, repOre, met,
+    ocExNC: f.cokeBase ? (dry.sinter + dry.pellet + dry.ore) / f.cokeBase : 0, metPerM3: oreV ? met / 1000 / oreV : 0, cokePerM3: cokeV ? f.cokeBase / 1000 / cokeV : 0 };
+}
+
+/* Run identical charges: coke dump then ore dump, ring by ring, then descent back to the stockline */
+function run(P, B, mx, order, nPre) {
+  const SUB = 24;                                                    // deposition steps per revolution
+  let top = new Array(N).fill(P.stock); const layers = [];           // each layer: {type, charge, bottom, top}
+  let rep = null;
+  for (let c = 0; c <= nPre; c++) {
+    const last = c === nPre, stats = { coke: new Array(N).fill(0), ore: new Array(N).fill(0), rings: [] }, profiles = { before: top.slice() };
+    for (const mat of ['coke', 'ore']) {
+      let segs = mx.map((r, i) => (mat === 'coke' ? { i, a: r[0], revs: r[1] } : { i, a: r[2], revs: r[3] })).filter(s => s.revs > 0);
+      if (order === 'out') segs.sort((a, b) => b.a - a.a); else segs.sort((a, b) => a.a - b.a);
+      const totRev = segs.reduce((s, x) => s + x.revs, 0), vol = mat === 'coke' ? B.cokeV : B.oreV;
+      const mu = mat === 'coke' ? IN.props.coke[1] : B.muOre, w = mat === 'coke' ? P.wC : P.wO, repA = mat === 'coke' ? IN.props.coke[2] : B.repOre;
+      const floor = top.slice(), level = meanDepth(top), acc = stats[mat];
+      for (const s of segs) {
+        const dV = vol * s.revs / totRev / (s.revs * SUB); let first = null, lastL = null;
+        for (let k = 0; k < s.revs * SUB; k++) {
+          const L = landing(s.a, mu, P, level, top, mat === 'coke' ? B.pCoke : B.pOre); if (!first) first = L; lastL = L;
+          const f = spread(L.r, w);
+          for (let i = 0; i < N; i++) { top[i] -= dV * f[i] / AREA[i]; if (P.mode === 'workbook') acc[i] += dV * f[i]; }
+          relax(top, repA, floor);
+        }
+        if (last) stats.rings.push({ mat, ring: s.i + 1, a: s.a, revs: s.revs, kg: (mat === 'coke' ? B.cokeWet : B.oreWet) * s.revs / totRev, first, lastL });
+      }
+      if (P.mode === 'extended') for (let i = 0; i < N; i++) acc[i] = Math.max(0, (floor[i] - top[i]) * AREA[i]);
+      layers.push({ type: mat, charge: c, bottom: floor, top: top.slice() });
+      profiles[mat] = top.slice();
+    }
+    if (last) rep = { stats, profiles, layers: layers.map(l => ({ ...l, bottom: l.bottom.slice(), top: l.top.slice() })) };
+    // descent: plug flow in the throat until the mean surface is back at the stockline
+    const sh = Math.max(0, P.stock - meanDepth(top));
+    if (!last) { top = top.map(v => v + sh); layers.forEach(l => { l.bottom = l.bottom.map(v => v + sh); l.top = l.top.map(v => v + sh); }); }
+  }
+  return rep;
+}
+
+/* ---------- Calculate ---------- */
+const fmt = (v, d = 2) => Number.isFinite(v) ? v.toFixed(d) : '–';
+function missing() {
+  const m = [];
+  Object.entries(IN.f).forEach(([k, v]) => { if (OPTIONAL.includes(k)) return; if ((v == null || !Number.isFinite(v)) && !(IN.gas === 'off' && GASF.includes(k))) m.push($('#i_' + k).closest('label').firstChild.textContent.trim()); });
+  Object.entries(IN.moist).forEach(([k, v]) => { if (v == null) m.push('Moisture: ' + MATS.find(x => x[0] === k)[1]); });
+  Object.entries(IN.mps).forEach(([k, v]) => { if (!(v > 0)) m.push('MPS: ' + MATS.find(x => x[0] === k)[1]); });
+  Object.entries(IN.props).forEach(([k, p]) => { if (p.some(v => v == null)) m.push('Properties: ' + k); });
+  IN.mx.forEach((r, i) => { if (r.some(v => v == null)) m.push('Matrix ring ' + (i + 1)); });
+  return m;
+}
+function calculate() {
+  const miss = missing();
+  if (miss.length) { $('#status').textContent = `Fill ${miss.length} empty input${miss.length > 1 ? 's' : ''} first: ` + miss.slice(0, 4).join(', ') + (miss.length > 4 ? '…' : ''); return; }
+  const f = IN.f; setGeom(f.throatD / 2);
+  const P = { L: f.L, e: f.e, Hp: f.Hp, Reff: Math.min(f.Reff, R), rpm: f.rpm, hG: f.hG, kImp: f.kImp, stock: f.stock, wC: f.wC, wO: f.wO, mode: IN.mode, gas: IN.gas === 'on' && IN.mode === 'extended' ? gasCalc(f.BV, f.O2, f.TP, f.Ttop, ATH) : null };
+  const B = burden(f, IN.moist, IN.props, IN.mps);
+  const t0 = performance.now();
+  const res = run(P, B, IN.mx, IN.order, Math.round(f.pre));
+  render(P, B, res);
+  $('#status').textContent = `Calculated ${new Date().toLocaleTimeString()} · ${IN.mode === 'extended' ? 'extended' : 'first-order'} model · ${Math.round(performance.now() - t0)} ms`;
+}
+$('#calc').addEventListener('click', () => { calculate(); if (!missing().length) BFLink.calculated(IN); });   // the simulator takes the same inputs
+$('#toSim').addEventListener('click', () => BFLink.openSim(IN, calculate, missing));
+
+/* ---------- Render ---------- */
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, a, p) { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; }
+function nice(v) { const p = 10 ** Math.floor(Math.log10(Math.max(v, 1e-6))); for (const m of [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10]) if (m * p >= v) return m * p; return 10 * p; }
+function frame(host, yMax, yLab, yFmt, yMin = 0, invert = false) {
+  host.innerHTML = ''; const W = Math.max(280, host.clientWidth), H = 240, m = { l: 48, r: 12, t: 22, b: 34 };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, role: 'img' }, host);
+  const x = r => m.l + r / R * (W - m.l - m.r), y = v => invert ? m.t + (v - yMin) / (yMax - yMin) * (H - m.t - m.b) : H - m.b - (v - yMin) / (yMax - yMin) * (H - m.t - m.b);
+  [[0, .4 * R, 'Centre'], [.4 * R, .75 * R, 'Intermediate'], [.75 * R, R, 'Wall']].forEach(([a, b, t], i) => {
+    if (i === 1) el('rect', { x: x(a), y: m.t, width: x(b) - x(a), height: H - m.t - m.b, fill: 'var(--surface-2)' }, svg);
+    el('text', { x: (x(a) + x(b)) / 2, y: m.t + 11, 'text-anchor': 'middle' }, svg).textContent = t; });
+  for (let k = 0; k <= 4; k++) { const v = yMin + (yMax - yMin) * k / 4; el('line', { x1: m.l, x2: W - m.r, y1: y(v), y2: y(v), stroke: 'var(--line)' }, svg);
+    el('text', { x: m.l - 6, y: y(v) + 4, 'text-anchor': 'end' }, svg).textContent = yFmt(v); }
+  for (let r = 0; r <= R + 1e-9; r += R > 3 ? 1 : 0.5) el('text', { x: x(r), y: H - m.b + 16, 'text-anchor': 'middle' }, svg).textContent = r.toFixed(1);
+  el('text', { x: W - m.r, y: H - 4, 'text-anchor': 'end' }, svg).textContent = 'Radius from furnace axis (m)';
+  el('text', { x: m.l - 6, y: 10, 'text-anchor': 'end' }, svg).textContent = yLab;
+  return { svg, x, y, W, H, m };
+}
+const path = pts => pts.map((p, i) => (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1)).join(' ');
+function hover(host, F, rows) {
+  const cross = el('line', { y1: F.m.t, y2: F.H - F.m.b, stroke: 'var(--muted)', visibility: 'hidden' }, F.svg);
+  const hit = el('rect', { x: F.m.l, y: F.m.t, width: F.W - F.m.l - F.m.r, height: F.H - F.m.t - F.m.b, fill: 'transparent' }, F.svg);
+  const tip = document.createElement('div'); tip.className = 'tip'; tip.hidden = true; host.appendChild(tip);
+  const mv = ev => { const b = F.svg.getBoundingClientRect(), sx = (ev.clientX - b.left) / b.width * F.W;
+    const i = Math.max(0, Math.min(N - 1, Math.floor((sx - F.m.l) / (F.W - F.m.l - F.m.r) * N)));
+    cross.setAttribute('x1', F.x(MID[i])); cross.setAttribute('x2', F.x(MID[i])); cross.setAttribute('visibility', 'visible');
+    tip.innerHTML = `<div class="row"><b>r ${EDGE[i].toFixed(2)}–${EDGE[i + 1].toFixed(2)} m</b></div>` + rows(i).map(([k, v]) => `<div class="row"><span>${k}</span><b class="mono">${v}</b></div>`).join('');
+    tip.hidden = false; tip.style.left = Math.min(F.x(MID[i]) / F.W * b.width + 12, b.width - 170) + 'px'; tip.style.top = '24px'; };
+  hit.addEventListener('pointermove', mv); hit.addEventListener('pointerdown', mv);
+  hit.addEventListener('pointerleave', () => { tip.hidden = true; cross.setAttribute('visibility', 'hidden'); });
+}
+function render(P, B, res) {
+  const st = res.stats, cmm = st.coke.map((v, i) => v / AREA[i] * 1000), omm = st.ore.map((v, i) => v / AREA[i] * 1000);
+  const oc = st.coke.map((v, i) => { const ck = v * B.cokePerM3 * 1000, mt = st.ore[i] * B.metPerM3 * 1000; return cmm[i] > 10 ? mt / ck : (omm[i] > 10 ? Infinity : null); });
+  $('#resFor').textContent = `${IN.mode === 'extended' ? 'Extended' : 'First-order'} model · ${IN.order === 'out' ? 'outer → inner' : 'inner → outer'}`;
+  const tiles = [['Coke batch (set point)', fmt(B.cokeWet, 0) + ' kg'], ['Oxide batch (set point)', fmt(B.oreWet, 0) + ' kg'], ['Ore/coke (excl NC)', fmt(B.ocExNC, 2)],
+    ['Coke volume', fmt(B.cokeV, 2) + ' m³'], ['Ore-side volume', fmt(B.oreV, 2) + ' m³'], ['Coke layer at throat', fmt(B.cokeV / ATH * 1000, 0) + ' mm'],
+    ['Ore layer at throat', fmt(B.oreV / ATH * 1000, 0) + ' mm'], ['Ore-side friction μ', fmt(B.muOre, 3)], ['Ore-side repose', fmt(B.repOre, 1) + '°'],
+    ...(P.gas ? [['Gas velocity above burden', fmt(P.gas.u, 2) + ' m/s'], ['Bosh gas', fmt(P.gas.Qn, 0) + ' Nm³/min'], ['Gas density at top', fmt(P.gas.rho, 2) + ' kg/m³']] : [['Gas drag', 'off']])];
+  $('#tiles').innerHTML = tiles.map(([k, v]) => `<div class="tile"><span>${k}</span><b>${v}</b></div>`).join('');
+  const al = [];
+  const tk = IN.f.tankV, om = IN.f.oreMax;
+  if (om > 0 && B.oreWet > om) al.push(`Ore-side batch ${fmt(B.oreWet, 0)} kg is over the ${fmt(om, 0)} kg limit you set.`);
+  if (tk > 0 && (B.oreV > tk || B.cokeV > tk)) al.push(`A batch is larger than the ${fmt(tk, 1)} m³ burden tank.`);
+  if (IN.f.sinterPct + IN.f.pelletPct + IN.f.cloPct > 100) al.push('Sinter + pellet + Lump CLO is over 100%.');
+  const walls = st.rings.filter(r => r.lastL.flag === 'Wall'); if (walls.length) al.push(`${walls.length} ring${walls.length > 1 ? 's reach' : ' reaches'} the wall (${walls.map(r => (r.mat === 'coke' ? 'coke ' : 'ore ') + r.a + '°').join(', ')}). Material there piles against the wall.`);
+  if (IN.f.BP != null && IN.f.TP != null && IN.f.BP <= IN.f.TP) al.push('Blast pressure is not above top pressure: check the pressures.');
+  const noC = oc.findIndex(v => v === Infinity); if (noC >= 0) al.push(`Ore with no coke under it from r = ${EDGE[noC].toFixed(2)} m: the coke window is closed there.`);
+  if (IN.mx.reduce((s, r) => s + r[1], 0) === 0 || IN.mx.reduce((s, r) => s + r[3], 0) === 0) al.push('Coke or metallics revolutions add up to zero.');
+  $('#alerts').innerHTML = al.length ? al.map(a => `<div class="alert" role="status">${a}</div>`).join('') : '<div class="ok">No warnings.</div>';
+  // ring table; gas shift = landing with gas drag minus without, on a flat stockline
+  const gshift = r => { const flat = new Array(N).fill(P.stock), mu = r.mat === 'coke' ? IN.props.coke[1] : B.muOre, pt = r.mat === 'coke' ? B.pCoke : B.pOre;
+    return (landing(r.a, mu, P, P.stock, flat, pt).raw - landing(r.a, mu, { ...P, gas: null }, P.stock, flat, pt).raw) * 1000; };
+  $('#ringTable').innerHTML = '<thead><tr><th>Dump</th><th>Ring</th><th>Angle °</th><th>Rev</th><th>Set point kg</th><th>Exit speed m/s</th><th>Fall time s</th><th>Lands at m</th><th>Gas shift mm</th><th>Note</th></tr></thead><tbody>' +
+    st.rings.map(r => { const L = r.first, L2 = r.lastL; const lands = Math.abs(L2.r - L.r) > 0.02 ? `${fmt(L.r)} → ${fmt(L2.r)}` : fmt(L2.r);
+      return `<tr class="${L2.flag === 'Wall' ? 'wall' : ''}"><td class="t">${r.mat === 'coke' ? 'Coke' : 'Ore side'}</td><td>${r.ring}</td><td>${r.a}</td><td>${r.revs}</td><td>${fmt(r.kg, 0)}</td><td>${fmt(L.v0)}</td><td>${fmt(L.tFall)}</td><td>${lands}</td><td>${P.gas ? fmt(gshift(r), 0) : '–'}</td><td class="t">${L2.flag === 'Wall' ? 'wall, raw ' + fmt(L2.raw) : L2.flag === 'No slide' ? 'no slide' : ''}</td></tr>`; }).join('') + '</tbody>';
+  // profile section
+  { const lay = res.layers, all = lay.flatMap(l => [...l.top, ...l.bottom]); const yMin = Math.max(-0.2, Math.min(...all) - 0.1), yMax = Math.min(Math.max(...all) + 0.1, P.stock + 3);
+    const F = frame($('#chProfile'), yMax, 'depth m', v => v.toFixed(1), yMin, true);
+    const pts = d => [[F.x(0), F.y(d[0])], ...MID.map((r, i) => [F.x(r), F.y(d[i])]), [F.x(R), F.y(d[N - 1])]];
+    const nLast = lay.length - 2;
+    el('rect', { x: F.x(0), y: F.y(Math.min(lay[0].bottom.reduce((a, b) => Math.max(a, b)), yMax)), width: F.x(R) - F.x(0), height: Math.max(0, F.H - F.m.b - F.y(Math.min(lay[0].bottom.reduce((a, b) => Math.max(a, b)), yMax))), fill: 'var(--base)', 'fill-opacity': 0.5 }, F.svg);
+    lay.forEach((l, k) => { const top = pts(l.top.map(v => Math.min(v, yMax))), bot = pts(l.bottom.map(v => Math.min(v, yMax))).reverse();
+      el('path', { d: path([...top, ...bot]) + ' Z', fill: k >= nLast ? (l.type === 'coke' ? 'var(--coke)' : 'var(--ore)') : 'var(--base)', 'fill-opacity': k >= nLast ? 0.85 : (l.type === 'coke' ? 0.35 : 0.65), stroke: 'var(--surface)', 'stroke-width': 0.6 }, F.svg); });
+    el('line', { x1: F.m.l, x2: F.W - F.m.r, y1: F.y(P.stock), y2: F.y(P.stock), stroke: 'var(--ink-2)', 'stroke-dasharray': '4 4' }, F.svg);
+    el('text', { x: F.W - F.m.r - 4, y: F.y(P.stock) - 5, 'text-anchor': 'end', style: 'fill:var(--ink-2)' }, F.svg).textContent = `Stockline ${P.stock} m`;
+    st.rings.forEach(r => { const xx = F.x(r.lastL.r); el('line', { x1: xx, x2: xx, y1: F.m.t + 14, y2: F.m.t + 22, stroke: r.mat === 'coke' ? 'var(--coke)' : 'var(--ore)', 'stroke-width': 2 }, F.svg); });
+    const pc = res.profiles; hover($('#chProfile'), F, i => [['Surface before coke', fmt(pc.before[i]) + ' m'], ['After coke', fmt(pc.coke[i]) + ' m'], ['After ore', fmt(pc.ore[i]) + ' m'], ['Coke / ore', `${fmt(cmm[i], 0)} / ${fmt(omm[i], 0)} mm`]]);
+  }
+  // thickness
+  { const F = frame($('#chThick'), nice(Math.max(300, ...cmm, ...omm) * 1.08), 'mm', v => v.toFixed(0));
+    const base = F.y(0), pc = cmm.map((v, i) => [F.x(MID[i]), F.y(v)]), po = omm.map((v, i) => [F.x(MID[i]), F.y(v)]);
+    const area = p => path([[p[0][0], base], ...p, [p[p.length - 1][0], base]]) + ' Z';
+    el('path', { d: area(pc), fill: 'var(--coke)', 'fill-opacity': .14 }, F.svg); el('path', { d: area(po), fill: 'var(--ore)', 'fill-opacity': .14 }, F.svg);
+    el('path', { d: path(pc), fill: 'none', stroke: 'var(--coke)', 'stroke-width': 2 }, F.svg); el('path', { d: path(po), fill: 'none', stroke: 'var(--ore)', 'stroke-width': 2 }, F.svg);
+    hover($('#chThick'), F, i => [['Coke', fmt(cmm[i], 0) + ' mm'], ['Ore side', fmt(omm[i], 0) + ' mm'], ['O/C', oc[i] == null ? '–' : oc[i] === Infinity ? 'ore only' : fmt(oc[i])]]); }
+  // O/C
+  { const fin = oc.filter(v => v != null && v !== Infinity), F = frame($('#chOC'), nice(Math.max(6, ...fin) * 1.08), 'O/C', v => v.toFixed(1));
+    let seg = []; oc.forEach((v, i) => { const ok = v != null && v !== Infinity; if (ok) seg.push([F.x(MID[i]), F.y(v)]); if ((!ok || i === N - 1) && seg.length) { el('path', { d: path(seg), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 2 }, F.svg); seg.forEach(p => el('circle', { cx: p[0], cy: p[1], r: 2.6, fill: 'var(--ink-2)' }, F.svg)); seg = []; } });
+    oc.forEach((v, i) => { if (v === Infinity) el('rect', { x: F.x(EDGE[i]) + 1, y: F.m.t + 16, width: F.x(EDGE[i + 1]) - F.x(EDGE[i]) - 2, height: 6, rx: 2, fill: 'var(--ore)' }, F.svg); });
+    const avg = B.met / B.cokeDry; el('line', { x1: F.m.l, x2: F.W - F.m.r, y1: F.y(avg), y2: F.y(avg), stroke: 'var(--muted)', 'stroke-dasharray': '4 4' }, F.svg);
+    el('text', { x: F.W - F.m.r, y: F.y(avg) - 5, 'text-anchor': 'end' }, F.svg).textContent = `Charge average ${avg.toFixed(2)}`;
+    hover($('#chOC'), F, i => [['O/C', oc[i] == null ? 'no burden' : oc[i] === Infinity ? 'ore only' : fmt(oc[i])], ['Coke', fmt(cmm[i], 0) + ' mm'], ['Ore side', fmt(omm[i], 0) + ' mm']]); }
+  // zones + radial table
+  const zc = [0, 0, 0], zo = [0, 0, 0]; MID.forEach((r, i) => { const z = r < .4 * R ? 0 : r > .75 * R ? 2 : 1; zc[z] += st.coke[i]; zo[z] += st.ore[i]; });
+  const tc = zc.reduce((a, b) => a + b, 0) || 1, to = zo.reduce((a, b) => a + b, 0) || 1;
+  $('#zoneTable').innerHTML = '<thead><tr><th>Zone</th><th>Radius m</th><th>Coke %</th><th>Ore %</th><th>O/C</th></tr></thead><tbody>' +
+    [['Centre', 0, .4], ['Intermediate', .4, .75], ['Wall', .75, 1]].map(([n, a, b], z) => { const ck = zc[z] * B.cokePerM3, mt = zo[z] * B.metPerM3;
+      return `<tr><td class="t">${n}</td><td>${fmt(a * R)}–${fmt(b * R)}</td><td>${fmt(zc[z] / tc * 100, 1)}</td><td>${fmt(zo[z] / to * 100, 1)}</td><td>${ck > 1e-4 ? fmt(mt / ck) : mt > 0 ? 'ore only' : '–'}</td></tr>`; }).join('') + '</tbody>';
+  $('#radTable').innerHTML = '<thead><tr><th>Ring</th><th>r from–to m</th><th>Coke mm</th><th>Ore mm</th><th>O/C</th><th>Surface after charge m</th></tr></thead><tbody>' +
+    MID.map((r, i) => `<tr><td>${i + 1}</td><td>${fmt(EDGE[i])}–${fmt(EDGE[i + 1])}</td><td>${fmt(cmm[i], 0)}</td><td>${fmt(omm[i], 0)}</td><td>${oc[i] == null ? '–' : oc[i] === Infinity ? 'ore only' : fmt(oc[i])}</td><td>${fmt(res.profiles.ore[i])}</td></tr>`).join('') + '</tbody>';
+  const down = renderDown(B, st);
+  // the Report page reads this snapshot of the results (it opens this page hidden to recalculate)
+  const ocv = v => v == null ? null : v === Infinity ? 'ore' : +v.toFixed(3);
+  const snap = { at: Date.now(), mode: IN.mode, order: IN.order, pre: IN.f.pre, gas: P.gas ? { u: P.gas.u, Qn: P.gas.Qn, rho: P.gas.rho } : null,
+    f: { BV: IN.f.BV, O2: IN.f.O2, TP: IN.f.TP, BP: IN.f.BP, Ttop: IN.f.Ttop, throatD: IN.f.throatD, stock: IN.f.stock, rpm: IN.f.rpm, L: IN.f.L, oc: IN.f.oc, cokeBase: IN.f.cokeBase },
+    tiles, alerts: al, mx: IN.mx, R, ocAvg: B.met / B.cokeDry, ocExNC: B.ocExNC, cokeWet: B.cokeWet, oreWet: B.oreWet,
+    rings: st.rings.map(r => ({ mat: r.mat, ring: r.ring, a: r.a, revs: r.revs, kg: r.kg, r: r.lastL.r, flag: r.lastL.flag || '' })),
+    zones: [['Centre', 0, .4], ['Intermediate', .4, .75], ['Wall', .75, 1]].map(([n, a, b], z) => { const ck = zc[z] * B.cokePerM3, mt = zo[z] * B.metPerM3;
+      return { name: n, r0: a * R, r1: b * R, coke: zc[z] / tc * 100, ore: zo[z] / to * 100, oc: ck > 1e-4 ? mt / ck : mt > 0 ? 'ore' : null }; }),
+    radial: { mid: MID, cmm, omm, oc: oc.map(ocv) }, levels: down };
+  try { localStorage.setItem('bf-calc-snapshot', JSON.stringify(snap)); } catch (e) {}
+  if (window.parent !== window) try { window.parent.postMessage({ bfCalcSnapshot: true }, '*'); } catch (e) {}
+}
+
+/* ---------- Down the furnace ---------- */
+function furnace(f) {
+  const g = { Rt: f.throatD / 2, tH: f.throatH, sH: f.shaftH, Rb: f.bellyD / 2, bH: f.bellyH, boH: f.boshH, Rh: f.hearthD / 2 };
+  g.dS = g.tH + g.sH; g.dB = g.dS + g.bH; g.dBot = g.dB + g.boH;
+  g.r = d => d <= g.tH ? g.Rt : d <= g.dS ? g.Rt + (d - g.tH) / g.sH * (g.Rb - g.Rt) : d <= g.dB ? g.Rb : d <= g.dBot ? g.Rb - (d - g.dB) / Math.max(g.boH, 1e-6) * (g.Rb - g.Rh) : g.Rh;
+  const step = 0.01, n = Math.ceil((g.dBot + 0.5) / step), V = new Float64Array(n + 1);
+  for (let i = 1; i <= n; i++) V[i] = V[i - 1] + Math.PI * g.r((i - 0.5) * step) ** 2 * step;
+  g.vol = d => { const x = Math.min(Math.max(d, 0), n * step) / step, i = Math.min(Math.floor(x), n - 1); return V[i] + (V[i + 1] - V[i]) * (x - i); };
+  g.depth = v => { let lo = 0, hi = n; if (v >= V[n]) return n * step; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (V[m] < v) lo = m; else hi = m; } return (lo + (v - V[lo]) / (V[hi] - V[lo])) * step; };
+  g.levels = [['Throat', f.stock], ['Mid-shaft', g.tH + g.sH / 2], ['Belly', g.dS + g.bH / 2], ['Mid-bosh', g.dB + g.boH / 2], ['Bosh bottom (tuyeres)', g.dBot]];
+  return g;
+}
+function renderDown(B, st) {
+  const g = furnace(IN.f), At = Math.PI * g.Rt ** 2, chV = B.cokeV + B.oreV;
+  const rows = g.levels.map(([name, d]) => { const Rr = g.r(d), k = At / (Math.PI * Rr * Rr); return { name, d, D: 2 * Rr, k, c: B.cokeV / At * k * 1000, o: B.oreV / At * k * 1000, above: (g.vol(d) - g.vol(IN.f.stock)) / chV }; });
+  $('#levelTable').innerHTML = '<thead><tr><th>Level</th><th>Depth m</th><th>Ø m</th><th>Coke mm</th><th>Metallics mm</th><th>Charges above</th></tr></thead><tbody>' +
+    rows.map(L => `<tr><td class="t">${L.name}</td><td>${fmt(L.d, 1)}</td><td>${fmt(L.D)}</td><td>${fmt(L.c, 0)}</td><td>${fmt(L.o, 0)}</td><td>${fmt(L.above, 1)}</td></tr>`).join('') + '</tbody>';
+  const zc = [0, 0, 0], zo = [0, 0, 0], za = [0, 0, 0];
+  MID.forEach((r, i) => { const z = r < .4 * R ? 0 : r > .75 * R ? 2 : 1; zc[z] += st.coke[i]; zo[z] += st.ore[i]; za[z] += AREA[i]; });
+  const lv = [rows[2], rows[3]];
+  $('#levelZones').innerHTML = '<thead><tr><th rowspan="2">Zone</th><th colspan="2" style="text-align:center">Belly mm</th><th colspan="2" style="text-align:center">Mid-bosh mm</th></tr><tr><th style="text-align:right">Coke</th><th>Metallics</th><th>Coke</th><th>Metallics</th></tr></thead><tbody>' +
+    ['Centre', 'Intermediate', 'Wall'].map((n, z) => `<tr><td class="t">${n}</td>` + lv.map(L => `<td>${fmt(zc[z] / za[z] * L.k * 1000, 0)}</td><td>${fmt(zo[z] / za[z] * L.k * 1000, 0)}</td>`).join('') + '</tr>').join('') + '</tbody>';
+  // section: furnace outline with the charges stacked from the stockline down to the tuyeres (mean layers)
+  const host = $('#chDown'); host.innerHTML = '';
+  const W = Math.max(280, host.clientWidth), H = Math.round(Math.min(560, Math.max(380, W * 0.9))), m = { l: 46, r: 120, t: 12, b: 12 };
+  const svg = el('svg', { viewBox: `0 0 ${W} ${H}`, style: `height:${H}px`, role: 'img', 'aria-label': 'Furnace section with coke and metallics layers from the stockline to the tuyeres' }, host);
+  const sc = Math.min((H - m.t - m.b) / g.dBot, (W - m.l - m.r) / (2 * Math.max(g.Rb, g.Rt, g.Rh))), cx = m.l + (W - m.l - m.r) / 2;
+  const X = r => cx + r * sc, Y = d => m.t + d * sc;
+  const edge = []; for (let d = 0; d <= g.dBot + 1e-9; d += 0.05) edge.push([g.r(d), d]);
+  let v = g.vol(IN.f.stock), d0 = IN.f.stock, k = 0;
+  while (d0 < g.dBot && k < 200) {
+    const isC = k % 2 === 0, d1 = Math.min(g.dBot, g.depth(v + (isC ? B.cokeV : B.oreV)));
+    const pts = []; for (let d = d0; d < d1; d += 0.05) pts.push(d); pts.push(d1);
+    const poly = [...pts.map(d => [X(-g.r(d)), Y(d)]), ...pts.slice().reverse().map(d => [X(g.r(d)), Y(d)])];
+    el('path', { d: 'M' + poly.map(p => p.map(n => n.toFixed(1)).join(',')).join('L') + 'Z', fill: isC ? 'var(--coke)' : 'var(--ore)', 'fill-opacity': k < 2 ? 1 : 0.8 }, svg);
+    v += isC ? B.cokeV : B.oreV; d0 = d1; k++;
+  }
+  el('path', { d: 'M' + edge.map(([r, d]) => X(-r).toFixed(1) + ',' + Y(d).toFixed(1)).join('L'), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1.5 }, svg);
+  el('path', { d: 'M' + edge.map(([r, d]) => X(r).toFixed(1) + ',' + Y(d).toFixed(1)).join('L'), fill: 'none', stroke: 'var(--ink-2)', 'stroke-width': 1.5 }, svg);
+  rows.forEach(L => { const y = Y(L.d), xr = X(L.D / 2);
+    el('line', { x1: X(-L.D / 2), x2: xr + 8, y1: y, y2: y, stroke: 'var(--ink)', 'stroke-width': 1, 'stroke-dasharray': '3 3' }, svg);
+    const t = el('text', { x: xr + 12, y: y - 2, style: 'fill:var(--ink);font-size:11.5px' }, svg); t.textContent = L.name;
+    const t2 = el('text', { x: xr + 12, y: y + 12, style: 'fill:var(--ink-2)' }, svg); t2.textContent = `C ${fmt(L.c, 0)} · M ${fmt(L.o, 0)} mm`; });
+  [0, 5, 10, 15, 20, 25, 30].filter(d => d <= g.dBot).forEach(d => { const t = el('text', { x: m.l - 8, y: Y(d) + 4, 'text-anchor': 'end', 'font-size': 10.5, fill: 'var(--muted)' }, svg); t.textContent = d + ' m'; });
+  return rows.map(L => ({ name: L.name, d: L.d, D: L.D, c: L.c, o: L.o, above: L.above }));
+}
+
+buildInputs();
+calculate();
+let rz; new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(() => { if (R && !missing().length) calculate(); }, 200); }).observe($('#results'));
+</script>
+
+<script src="netload.js"></script>
+<script src="importer.js"></script>
+<script>BFImport.mount({ card: 'importCard', after: function () { calculate(); if (!missing().length) BFLink.calculated(IN); } });
+BFLink.init();</script>
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script>window.PM_CFG = window.PM_CFG || { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+</body>
+</html>

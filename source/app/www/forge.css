@@ -1,0 +1,114 @@
+/* BF Model "Foundry" theme: graphite steel shell, molten hot-metal accents, condensed nameplate type.
+   Loaded last on every page. Data colours (coke blue, ore orange) are left alone so charts read the same.
+   Colours below keep body text at 7:1 or better and buttons/labels at 4.5:1 or better. */
+
+/* ---- tokens: calculator and 3D simulator (light) */
+:root {
+  --bg: #efece7; --surface: #ffffff; --surface-2: #f6f4f0; --ink: #16181b; --ink-2: #3f434a; --muted: #5d636b;
+  --line: #d8d2c8; --accent: #c2410c; --accent-ink: #ffffff; --accent-soft: #fde9dc;
+  --stage: #dcd8d1; --stage-ink: #1b1d20; --hud-bg: rgba(255,255,255,.9);
+  --warn: #9a4a00; --good: #23703a;
+  --molten: linear-gradient(90deg, #ff3d00 0%, #ff7a1a 45%, #ffc23d 100%);
+  --graphite: #15171a; --graphite-2: #1f2226; --steel-line: #34383e;
+}
+/* ---- tokens: dark (system dark mode or data-theme="dark") */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1012; --surface: #171a1d; --surface-2: #1f2327; --ink: #efece7; --ink-2: #bdb8b0; --muted: #969189;
+  --line: #2f3338; --accent: #ff8a3d; --accent-ink: #1a0900; --accent-soft: #3b1f0d;
+  --stage: #08090b; --stage-ink: #e9e5de; --hud-bg: rgba(16,18,21,.88);
+  --warn: #f0a54a; --good: #72c784; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1012; --surface: #171a1d; --surface-2: #1f2327; --ink: #efece7; --ink-2: #bdb8b0; --muted: #969189;
+  --line: #2f3338; --accent: #ff8a3d; --accent-ink: #1a0900; --accent-soft: #3b1f0d;
+  --stage: #08090b; --stage-ink: #e9e5de; --hud-bg: rgba(16,18,21,.88);
+  --warn: #f0a54a; --good: #72c784; color-scheme: dark }
+
+/* ---- page navigation: the graphite control strip (calculator/simulator .bfnav, chemistry .jump) */
+html .bfnav, html .jump {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 8px 11px; margin: 0 0 16px;
+  background: linear-gradient(180deg, #23262b, #15171a); border: 1px solid #2c3035; border-radius: 14px;
+  position: relative; overflow: hidden; box-shadow: 0 10px 24px -16px rgba(0,0,0,.7) }
+html .bfnav::after, html .jump::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--molten) }
+html .bfnav::before {
+  content: "BF MODEL"; font: 700 19px/1 "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .14em;
+  padding: 0 12px 0 34px; margin-right: 2px; color: #ffb547; white-space: nowrap; align-self: center;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M13 3h6v4l5 12v2l-2 5v1H10v-1l-2-5v-2l5-12z' fill='%23c9cdd2'/%3E%3Cpath d='M10 26h12v3H10z' fill='%23ff7a1a'/%3E%3Cpath d='M22 27c3 0 4 1 5 3' stroke='%23ffb547' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") 6px 50% / 24px 24px no-repeat }
+html .bfnav a, html .jump a {
+  font: 600 13.5px/1 "IBM Plex Sans", system-ui, sans-serif; text-decoration: none; color: #e4e0d9;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); padding: 11px 14px; border-radius: 9px;
+  -webkit-tap-highlight-color: transparent; transition: background .15s, border-color .15s }
+html .bfnav a:hover, html .jump a:hover { background: rgba(255,255,255,.12); border-color: rgba(255,181,71,.45) }
+html .bfnav a.on, html .jump a.on {
+  background: linear-gradient(180deg, #ff9a3d, #ec5f12); color: #1a0900; border-color: #ffb066;
+  box-shadow: 0 4px 16px -6px rgba(255,106,26,.85) }
+html .bfnav a:focus-visible, html .jump a:focus-visible { outline: 2px solid #ffb547; outline-offset: 2px }
+@media (max-width: 560px) {
+  html .bfnav::before { width: 100%; padding-top: 4px; padding-bottom: 6px; background-position: 6px 40% }
+  html .bfnav a, html .jump a { padding: 10px 11px; font-size: 13px; flex: 1 1 auto; text-align: center }
+}
+
+/* ---- calculator and simulator: nameplate headings, steel cards, molten buttons */
+.wrap > .top h1, .wrap > header h1 { font-weight: 700; font-size: 34px; letter-spacing: .01em; text-transform: uppercase }
+.card { border-radius: 12px; box-shadow: 0 1px 0 rgba(0,0,0,.03), 0 10px 22px -18px rgba(60,30,0,.45) }
+.card h2 { color: var(--ink); display: inline-flex; align-items: center; gap: 2px }
+.card h2::before { content: ""; width: 4px; height: .95em; border-radius: 2px; background: linear-gradient(180deg, #ffc23d, #ff3d00); margin-right: 8px; flex: none }
+h2 .n { color: var(--accent) }
+.btn { border-radius: 8px }
+.btn.primary, .views button[aria-pressed="true"], .seg button[aria-pressed="true"] {
+  background: linear-gradient(180deg, #d4500f, #a8360a); border-color: #a8360a; color: #fff; font-weight: 600 }
+.btn.primary:hover { filter: brightness(1.08) }
+.tile, .bout div { border-left: 3px solid #ff7a1a }
+.bout div.alert { border-left-width: 1px }
+.tile b, .bout b { color: var(--ink) }
+.actions { border-radius: 12px; box-shadow: 0 -6px 20px -14px rgba(0,0,0,.4) }
+.stage { border-radius: 12px }
+.spec span { border-radius: 6px }
+.form input:focus, .form select:focus, td input:focus { border-color: var(--accent); outline: 2px solid color-mix(in srgb, var(--accent) 35%, transparent); outline-offset: 0 }
+
+/* ---- chemistry page (608burden layout): graphite header and tab bar, molten actions */
+body.forge-chem {
+  --navy: #15171a; --navy2: #b93d0c; --ink: #16181b; --muted: #5d636b; --line: #e0dad1; --bg: #f1eee9; --card: #ffffff;
+  --amber: #ff7a1a; --chip: #efe9e1 }
+body.forge-chem .top { background: linear-gradient(180deg, #23262b, #15171a); border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, #ff3d00, #ff7a1a 45%, #ffc23d) 1 }
+body.forge-chem .top h1 { font: 700 21px/1.1 "Barlow Condensed", "Arial Narrow", sans-serif; letter-spacing: .04em; text-transform: uppercase }
+body.forge-chem .top p { color: #c8c3bb }
+body.forge-chem .logo { background: #2a2e33; border: 1px solid #3a3f46 }
+body.forge-chem .pill.neutral { background: #2c3035; color: #ece8e1 }
+body.forge-chem .jump { max-width: 760px; margin: 14px auto 0; width: calc(100% - 32px) }
+body.forge-chem .btn.primary { background: linear-gradient(180deg, #cf4d10, #a8360a); color: #fff }
+body.forge-chem .card, body.forge-chem .kpi { border-radius: 12px; box-shadow: 0 10px 22px -20px rgba(60,30,0,.5) }
+body.forge-chem main h2 { color: #3f434a; display: flex; align-items: center }
+body.forge-chem main h2::before { content: ""; width: 4px; height: 1em; border-radius: 2px; background: linear-gradient(180deg, #ffc23d, #ff3d00); margin-right: 8px; flex: none }
+body.forge-chem .tabs { background: #15171a; border-top: 0; box-shadow: 0 -1px 0 #2c3035 }
+body.forge-chem .tabs::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--molten) }
+body.forge-chem .tabs button { color: #b3aea6; position: relative }
+body.forge-chem .tabs button.on { color: #ffffff }
+body.forge-chem .tabs button.on svg { stroke: #ff8a3d }
+body.forge-chem .tabs button.on::after { content: ""; position: absolute; left: 22%; right: 22%; top: 2px; height: 3px; border-radius: 0 0 3px 3px; background: #ff8a3d }
+body.forge-chem .sheethead { background: linear-gradient(180deg, #23262b, #15171a) }
+
+body.forge-chem .kpi.calc { border-left: 5px solid #ff7a1a }
+body.forge-chem .linkrow { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); text-align: left; display: grid; gap: 6px }
+body.forge-chem .linkrow label { font-weight: 600; font-size: 14px; color: var(--ink) }
+body.forge-chem .linkrow > div { display: flex; gap: 8px }
+body.forge-chem .linkrow input { flex: 1; min-width: 0; font: 14px/1.3 system-ui, sans-serif; padding: 11px 12px; border: 1px solid #cfc8bd; border-radius: 10px; background: #fff; color: var(--ink) }
+body.forge-chem .linkrow input:focus { outline: 2px solid #ff8a3d; outline-offset: 0; border-color: #c2410c }
+body.forge-chem .linkrow .btn { flex: none; padding: 11px 18px }
+body.forge-chem .linkrow small { color: var(--muted); font-size: 12px }
+
+body.forge-chem details.method summary { cursor: pointer; font-size: 14px }
+body.forge-chem details.method p { font-size: 13.5px; margin: 10px 0 }
+body.forge-chem details.method table { width: 100%; font-size: 13px; border-collapse: collapse }
+body.forge-chem details.method td { padding: 5px 4px; border-bottom: 1px solid var(--line); vertical-align: top }
+body.forge-chem details.method td.n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums }
+
+/* ---- chemistry hand-over card on the calculator and simulator */
+html .c608 { border-left: 4px solid #ff7a1a !important }
+html .c608 .acts a { color: #8a2f08; background: #fde9dc; border: 1px solid #f6c6a5 }
+html .c608 .acts a:hover { background: #fbd8c1 }
+html .t608 { background: #15171a; border-top: 2px solid #ff7a1a } html .t608 a { color: #b3aea6 } html .t608 a.on { color: #fff } html .t608 a.on svg { stroke: #ff8a3d }
+html .bar608 { background: #15171a }
+
+@media (prefers-reduced-motion: reduce) { html .bfnav a, html .jump a { transition: none } }
+@media (max-width: 560px) { .wrap > .top h1, .wrap > header h1 { font-size: 28px } }

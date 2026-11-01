@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<script src="gate.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#071426">
+<title>BF Model</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body class="pm-home">
+<div class="wrap" data-sign-host>
+  <header class="hero">
+    <img class="art" src="hero.svg" alt="" aria-hidden="true" width="1600" height="720" onerror="this.remove()">
+    <div class="shade" aria-hidden="true"></div>
+    <div class="htext">
+      <div class="brand">
+        <span class="mark" aria-hidden="true"><svg viewBox="0 0 32 32"><defs><linearGradient id="st" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3e9f0"/><stop offset="1" stop-color="#8697a9"/></linearGradient><linearGradient id="hm" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#ff3d00"/><stop offset="1" stop-color="#ffc23d"/></linearGradient></defs><path d="M13 3h6v4l5 12v2l-2 5v1H10v-1l-2-5v-2l5-12z" fill="url(#st)"/><path d="M11.5 11h9M10 15h12M9.2 19h13.6" stroke="#46576b" stroke-width=".8"/><path d="M10 26h12v3H10z" fill="url(#hm)"/><path d="M22 27c3 0 4 1 5 3" stroke="#ffc23d" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></span>
+        <span class="eyebrow">Blast furnace burden suite · v3.5</span>
+      </div>
+      <h1>BF <span class="hot">Model</span></h1>
+      <p class="tagline">Burden chemistry, 3D distribution and the furnace 3D view, for bell-less top furnaces.</p>
+      <p class="welcome" id="welcome">Welcome. Your furnace data stays on this device.</p>
+      <div class="hbtns">
+        <a class="b know" href="know.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Know your input / output</a>
+        <a class="b go" href="chemistry.html">Start with batch chemistry ›</a>
+      </div>
+    </div>
+  </header>
+
+  <section class="trial" id="trial" hidden aria-live="polite"></section>
+
+  <section aria-labelledby="qa">
+    <h2 class="sec" id="qa"><span>Quick actions</span></h2>
+    <div class="quick">
+      <a href="data-input.html" style="--c:var(--chem)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h10l6 6v10H4zM14 4v6h6M8 14l3 3 5-6"/></svg><b>Import data input</b><small>One file fills every page</small></a>
+      <a href="calculator.html" style="--c:var(--calc)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.6"/></svg><b>Calculate burden</b><small>Ring landing, layers, O/C</small></a>
+      <a href="simulator.html" style="--c:var(--sim)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg><b>3D distribution</b><small>Chute filling the throat</small></a>
+      <a href="furnace-inside.html" style="--c:var(--inside)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l3 9-1.5 6h-9L6 12z"/><path d="M10 15c0-2 2-2.5 2-4.5M14 15c0-1.5 1-2 1-3.5"/></svg><b>Furnace 3D view</b><small>Zone temperatures, gas flow</small></a>
+      <a href="report.html" style="--c:var(--rep)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg><b>Open report</b><small>One sheet, PDF download</small></a>
+    </div>
+  </section>
+
+  <section aria-labelledby="mods">
+    <h2 class="sec" id="mods"><span>Modules</span><em>Order of work: 01 → 04</em></h2>
+    <div class="parts">
+      <a class="card" style="--c:var(--chem)" href="data-input.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h10l6 6v10H4zM14 4v6h6M12 11v6M9 14l3-3 3 3"/></svg></span>
+        <span class="n">00</span>
+        <h3>Data input</h3>
+        <p>Upload one Excel or CSV file and Batch chemistry, the Burden calculator and Furnace 3D view are filled together; each input is entered once. Download the input data sheet with your current values.</p>
+        <span class="tag">Start here</span><span class="go">Open data input ›</span>
+      </a>
+      <a class="card" style="--c:var(--chem)" href="chemistry.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v6l-5.5 9.5A1.7 1.7 0 0 0 6 21h12a1.7 1.7 0 0 0 1.5-2.5L14 9V3M7.5 15h9"/></svg></span>
+        <span class="n">01</span>
+        <h3>Burden batch wise output chemistry</h3>
+        <p>Upload lab reports (Excel), review the chemistry and moisture of every raw material, enter the charge per batch, and get the hot metal and output slag chemistry, basicity, slag rate, fuel rate and production. Load lab files from your device or from a link.</p>
+        <span class="tag">Inputs → results</span><span class="go">Open chemistry ›</span>
+      </a>
+      <a class="card" style="--c:var(--calc)" href="calculator.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5.5"/><circle cx="12" cy="12" r="2"/><path d="M12 3v4"/></svg></span>
+        <span class="n">02</span>
+        <h3>Burden calculator</h3>
+        <p>Enter your furnace, chute and charging matrix (coke and metallics angle and revolutions). Get ring landing radii, layer thickness, O/C by radius, burden profile and warnings.</p>
+        <span class="tag">Charging &amp; stockline</span><span class="go">Open calculator ›</span>
+      </a>
+      <a class="card" style="--c:var(--sim)" href="simulator.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9zM4 7.5l8 4.5 8-4.5M12 12v9"/></svg></span>
+        <span class="n">03</span>
+        <h3>3D distribution</h3>
+        <p>Watch the rotating chute fill the throat ring by ring with the same charge, with the layers drawn down to the tuyeres in 3D.</p>
+        <span class="tag">3D view</span><span class="go">Open simulator ›</span>
+      </a>
+      <a class="card" style="--c:var(--rep)" href="report.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg></span>
+        <span class="n">04</span>
+        <h3>Report</h3>
+        <p>One report of the chemistry and calculator results: slag and hot metal chemistry, rates, production, burden ratio, charging matrix and distribution. Download it as a PDF.</p>
+        <span class="tag pro" data-pro>Pro · ₹25 / 3 months, with Other charging modes</span><span class="go">Open report ›</span>
+      </a>
+      <a class="card" style="--c:var(--mat)" href="materials.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 7v6l7 4 7-4V7zM5 7l7 4 7-4M12 11v6M4 19l3-2M20 19l-3-2"/></svg></span>
+        <span class="n">05</span>
+        <h3>Fact must know</h3>
+        <p>Coke, sinter, pellet and lump ore as live 3D lumps, started from your burden analysis. Move the sliders to see degradation, fines and coke rate change, with suggestions that update as you go, and the live CO, CCO and COO corrective model at the bottom.</p>
+        <span class="tag">Raw materials</span><span class="go">Open facts ›</span>
+      </a>
+      <a class="card" style="--c:var(--modes)" href="charging-modes.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 4v4M14 10v4M11 16v4"/></svg></span>
+        <span class="n">06</span>
+        <h3>Other charging modes</h3>
+        <p>Other than C-O charging: COO and CCO. Fill the ring, angle and revolutions of each coke and oxide dump with its weight, press Calculate, and watch the full charge in the 3D distribution with landing radii, layers and O/C.</p>
+        <span class="tag pro" data-pro>Pro · ₹25 / 3 months, with Report</span><span class="go">Open charging modes ›</span>
+      </a>
+      <a class="card" style="--c:var(--quiz)" href="feedback.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM8 9h8M8 12h5"/></svg></span>
+        <span class="n">07</span>
+        <h3>Feedback and Suggestion</h3>
+        <p>Suggest a change to the app or a new feature, or report a problem. It goes straight to the app admin by email.</p>
+        <span class="tag">Support</span><span class="go">Open feedback ›</span>
+      </a>
+      <a class="card" style="--c:var(--inside)" href="furnace-inside.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l3 9-1.5 6h-9L6 12zM7.5 18 6 21h12l-1.5-3"/><path d="M10 15c0-2 2-2.5 2-4.5M14 15c0-1.5 1-2 1-3.5"/></svg></span>
+        <span class="n">08</span>
+        <h3>Furnace 3D view: temperature and gas flow</h3>
+        <p>Zonal temperatures from the wall to the centre and the gas path from the tuyeres to the stockline, on your burden distribution and fuel rates. 3D cut-away furnace, PCI combustion in the raceway with live coal burning, uptake, probe and periphery readings against the calculation, and actions.</p>
+        <span class="tag">Inside the furnace</span><span class="go">Open furnace inside ›</span>
+      </a>
+      <a class="card" style="--c:var(--know)" href="know.html">
+        <span class="ico"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 21V5M8 7h7M8 11h7"/></svg></span>
+        <span class="n">i</span>
+        <h3>Know your input / output</h3>
+        <p>What every input means and its unit, what every result tells you, and the exact layout of the Excel files the app reads.</p>
+        <span class="tag">Guide</span><span class="go">Open guide ›</span>
+      </a>
+    </div>
+    <p class="note">All parts open with example values. Replace them with your own lab analysis, charge, furnace geometry and charging matrix before using the results.</p>
+  </section>
+
+  <section aria-labelledby="chute" class="photo-sec">
+    <h2 class="sec" id="chute"><span>Bell-less top charging</span><em>Tap the picture to open it full size</em></h2>
+    <figure class="photo"><button type="button" id="zoomOpen" aria-label="Open the picture full size"><img src="home-chute.jpg" loading="lazy" alt="Bell-less top charging. Left: simulation of a coke stream from the particle factory through the rotating chute onto the coke bed, with the BF axis marked. Right: the rotating chute with its flow surface with ribs, stiffeners and plain flow surface. Signed Niteen Kumar." width="2524" height="1812"></button></figure>
+  </section>
+
+  <div class="zoom" id="zoom" role="dialog" aria-label="Picture, full size"><button type="button" class="close" id="zoomClose">Close ✕</button><img src="home-chute.jpg" alt="" width="2524" height="1812" loading="lazy"></div>
+  <div class="foot"><span>BF MODEL 3.5</span><span>FURNACE DATA STAYS ON THIS DEVICE</span><span class="who" id="who"></span><button type="button" class="out" id="logout">Log out</button><button type="button" class="out" id="delacc">Delete account</button></div>
+</div>
+<script src="auth-config.js"></script>
+<script src="auth-api.js"></script>
+<script src="pay-config.js"></script>
+<script src="trial.js"></script>
+<script src="paywall.js"></script>
+<script>window.PM_CFG = { app: 'BF Model' };</script>
+<script src="premium.js"></script>
+<script src="home.js"></script>
+<script>
+(function () {
+  var u = BFAuth.user();
+  if (u) {
+    document.getElementById('who').textContent = 'SIGNED IN: ' + String(u.name || u.loginId).toUpperCase() + (u.company ? ' · ' + String(u.company).toUpperCase() : '');
+    var first = String(u.name || u.loginId).split(' ')[0];
+    document.getElementById('welcome').textContent = 'Welcome back, ' + first + '. Your furnace data stays on this device.';
+  }
+  document.getElementById('logout').addEventListener('click', function () {
+    if (!confirm('Log out of BF Model on this device? Your saved inputs stay; you need internet to log in again.')) return;
+    BFAuth.signOut(); location.replace('auth.html');
+  });
+  document.getElementById('delacc').addEventListener('click', function () {
+    var me = BFAuth.user(); if (!me) return;
+    if (!confirm('Delete your BF Model account? Your login and profile are deleted from the app owner\'s records. This cannot be undone. Furnace data saved on this device stays.')) return;
+    var pw = prompt('Type your password to delete the account ' + me.loginId + ':');
+    if (!pw) return;
+    BFAuth.call('deleteAccount', { loginId: me.loginId, password: pw }).then(function () {
+      alert('Your account is deleted.'); BFAuth.signOut(); location.replace('auth.html');
+    }, function (e) { alert(e.message); });
+  });
+  BFAuth.dailyCheck();
+})();
+(function () {
+  var z = document.getElementById('zoom');
+  document.getElementById('zoomOpen').addEventListener('click', function () { z.classList.add('on'); z.scrollLeft = 0; z.scrollTop = 0; });
+  document.getElementById('zoomClose').addEventListener('click', function () { z.classList.remove('on'); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') z.classList.remove('on'); });
+})();
+</script>
+</body>
+</html>
